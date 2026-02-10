@@ -1,10 +1,12 @@
+import WhiteLogo from "../assets/logo_white.png"
+
 const Main = ({children}) => {
     return(
         <>
-            <header className="w-full bg-color-secondary">
-                <img src="../assets/GLOBALTECH 2.png" alt="Logo" />
+            <header className="w-full bg-secondary">
+                <img src={WhiteLogo} alt="Logo" />
             </header>
-            <main className="w-">
+            <main className="w-full">
                 {children}
             </main>
         </>
