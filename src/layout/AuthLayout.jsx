@@ -1,7 +1,8 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Logo from "../assets/logo.png";
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = () => {
   // Use direct video URL instead of local file
   const bgVideoUrl =
     "https://res.cloudinary.com/dmdh7etb5/video/upload/v1770862847/bg_video_y7iast.mp4";
@@ -24,7 +25,7 @@ const AuthLayout = ({ children }) => {
           <img src={Logo} className="w-full h-9" alt="Logo" />
         </div>
 
-        {children}
+        <Outlet />
       </div>
     </div>
   );
