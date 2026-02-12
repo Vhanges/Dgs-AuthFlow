@@ -6,6 +6,9 @@ const useProfile = () => {
 
     const accessToken = useAuthStore((state) => state.accessToken);
 
+    // const {login} = useAuthStore();
+
+    // return login();
     return useQuery({
             queryKey: ["profile"],  
             queryFn: () => profile.getProfile(accessToken),
