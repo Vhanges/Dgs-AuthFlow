@@ -1,136 +1,94 @@
-import Header from "../components/Header";
+import { Link } from "react-router-dom";
 import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useSignUp } from "../hooks/useSignup";
 import { Modal } from "antd";
+import Header from "../components/Header";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
+import { useSignUp } from "../hooks/useSignup";
 
 const SignUp = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const { mutate, isPending } = useSignUp();
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (formData.password != formData.confirmPassword) {
-      setErrorMessage("Password did not match.");
-
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 2000);
-      return;
-    }
-
-    mutate(formData, {
-      onSuccess: () => {
-        setIsModalOpen(true);
-      },
-      onError: (error) => {
-        setErrorMessage(error.message || "An error occurred during signup");
-
-        setTimeout(() => {
-          setErrorMessage("");
-        }, 2000);
-      },
-    });
-  };
+  const {
+    formData,
+    errorMessage,
+    isModalOpen,
+    isPending,
+    handleChange,
+    handleSubmit,
+    closeModal,
+  } = useSignUp();
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-6 w-full px-36.5 pt-8"
-    >
-      <Header
-        title="Sign Up"
-        subtitle="Kindly fill up the needed information below"
-      />
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col w-full gap-3">
-          <div className="relative">
-            <MdOutlineMailOutline className="text-[#7E7E7E] absolute top-2.5 left-2 text-[17px]" />
-            <input
-              className="pl-8 py-2 w-full border-none outline-none border rounded-sm text-sm bg-[#f2f2f2]"
-              placeholder="Email"
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
+        noValidate
+      >
+        <Header
+          title="Sign Up"
+          subtitle="Kindly fill up the needed information below"
+        />
+
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col w-full gap-3">
+            <FormInput
+              icon={MdOutlineMailOutline}
               type="email"
-              id="email"
+              name="email"
               value={formData.email}
               onChange={handleChange}
-              name="email"
+              placeholder="Email"
+              disabled={isPending}
               required
             />
-          </div>
-          <div className="relative">
-            <MdLockOutline className="text-[#7E7E7E] absolute top-2.5 left-2 text-[18px]" />
-            <input
-              className="pl-8 py-2 w-full border-none outline-none border rounded-sm text-sm bg-[#f2f2f2]"
+
+            <FormInput
+              icon={MdLockOutline}
               type="password"
               name="password"
-              id="password"
-              minLength={8}
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
+              disabled={isPending}
+              required
+            />
+
+            <FormInput
+              icon={MdLockOutline}
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+              disabled={isPending}
               required
             />
           </div>
-          <div className="relative">
-            <MdLockOutline className="text-[#7E7E7E] absolute top-2.5 left-2 text-[18px]" />
-            <input
-              className="pl-8 py-2 w-full border-none outline-none border rounded-sm text-sm bg-[#f2f2f2]"
-              type="password"
-              name="confirmPassword"
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              minLength={8}
-              placeholder="Confirm Password"
-            />
-          </div>
 
-          <div className={`bg-white relative w-full`}>
-            <p className="text-sm text-red-600 absolute right-0">
-              {errorMessage}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-4 mt-4">
-          <div className="w-full px-25">
-            <button
-              type="submit"
-              disabled={isPending}
-              className={`cursor-pointer w-full p-2 bg-secondary rounded-md text-white font-bold text-md disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              Sign Up
-            </button>
-          </div>
+          {errorMessage && (
+            <div className="w-full flex justify-end">
+              <p className="text-sm text-red-600" role="alert">
+                {errorMessage}
+              </p>
+            </div>
+          )}
         </div>
 
-        <div className="flex gap-1 justify-center items-center">
-          <GoArrowLeft />
+        <div className="flex flex-col gap-2 mt-4">
+          <Button type="submit" disabled={isPending} variant="primary">
+            {isPending ? "Signing up..." : "Sign Up"}
+          </Button>
+
           <Link
             to="/login"
-            className="flex justify-center items-center text-sm pb-0.5 text-black!"
+            className="flex justify-center items-center gap-1 text-sm text-black hover:underline mt-2"
           >
-            Back to Login
+            <GoArrowLeft />
+            <span>Back to Login</span>
           </Link>
         </div>
-      </div>
+      </form>
 
       <Modal
         title="Account Successfully Created"
@@ -147,14 +105,16 @@ const SignUp = () => {
       >
         <div className="flex flex-col gap-4">
           <p>Check your email to verify your account.</p>
-          <Link className="w-full flex justify-center items-center" to="/login">
-            <button className="cursor-pointer w-full text-md rounded-md bg-secondary text-white font-bold p-2">
-              Okay
-            </button>
+          <Link
+            className="w-full flex justify-center items-center"
+            to="/login"
+            onClick={closeModal}
+          >
+            <Button variant="primary">Okay</Button>
           </Link>
         </div>
       </Modal>
-    </form>
+    </>
   );
 };
 

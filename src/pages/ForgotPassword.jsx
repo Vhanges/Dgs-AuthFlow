@@ -1,85 +1,70 @@
-import Header from "../components/Header";
-import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
-import { GoArrowLeft } from "react-icons/go";
 import { Link } from "react-router-dom";
-import { forgotPasswordRequest } from "../services/auth";
-import { useState } from "react";
+import { MdOutlineMailOutline } from "react-icons/md";
+import { GoArrowLeft } from "react-icons/go";
 import { Modal } from "antd";
-import { useMutation } from "@tanstack/react-query";
+import Header from "../components/Header";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
+import { useForgotPassword } from "../hooks/useForgotPassword";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const forgotPasswordMutation = useMutation({
-    mutationFn: forgotPasswordRequest,
-    onSuccess: (data) => {
-      console.log("success", data);
-      setIsModalOpen(true);
-      setEmail("");
-    },
-    onError: () => {
-      console.log("an error occur");
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    forgotPasswordMutation.mutate(email);
-  };
+  const {
+    email,
+    errorMessage,
+    isModalOpen,
+    isPending,
+    handleEmailChange,
+    handleSubmit,
+    closeModal,
+  } = useForgotPassword();
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-6 w-full px-36.5 pt-8"
-    >
-      <Header
-        title="Forgot Password"
-        subtitle="The instructions will be sent on the email you provide."
-      />
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col w-full gap-3">
-          <div className="relative">
-            <MdOutlineMailOutline className="text-[#7E7E7E] absolute top-2.5 left-2 text-[17px]" />
-            <input
-              className="pl-8 py-2 w-full border-none outline-none border rounded-sm text-sm bg-[#f2f2f2]"
-              placeholder="Email"
-              type="text"
-              name="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
+        noValidate
+      >
+        <Header
+          title="Forgot Password"
+          subtitle="The instructions will be sent on the email you provide."
+        />
+
+        <div className="flex flex-col gap-3">
+          <FormInput
+            icon={MdOutlineMailOutline}
+            type="email"
+            name="email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="Email"
+            disabled={isPending}
+            required
+          />
+
+          {errorMessage && (
+            <div className="w-full">
+              <p className="text-sm text-red-600" role="alert">
+                {errorMessage}
+              </p>
+            </div>
+          )}
         </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-4 mt-4">
-          <div className="w-full px-25">
-            <button
-              type="submit"
-              disabled={forgotPasswordMutation.isPending}
-              className={`cursor-pointer w-full p-2 bg-secondary rounded-md text-white font-bold text-md`}
-            >
-              {forgotPasswordMutation.isPending
-                ? "Sending Email"
-                : "Forgot Password"}
-            </button>
-          </div>
-        </div>
-        <div
-          className="flex gap-1
-             justify-center items-center"
-        >
-          <GoArrowLeft />
+
+        <div className="flex flex-col gap-2 mt-4">
+          <Button type="submit" disabled={isPending} variant="primary">
+            {isPending ? "Sending Email..." : "Send Reset Link"}
+          </Button>
+
           <Link
             to="/login"
-            className="flex text-sm justify-center items-center pb-0.5 text-black!"
+            className="flex justify-center items-center gap-1 text-sm text-black hover:underline mt-2"
           >
-            Back to Login
+            <GoArrowLeft />
+            <span>Back to Login</span>
           </Link>
         </div>
-      </div>
+      </form>
 
       <Modal
         title="Password Reset Email Sent"
@@ -95,15 +80,17 @@ const ForgotPassword = () => {
         }}
       >
         <div className="flex flex-col gap-4">
-          <p>A reset link has been sent.</p>
-          <Link className="w-full flex justify-center items-center" to="/login">
-            <button className="cursor-pointer w-full text-md rounded-md bg-secondary text-white font-bold p-2">
-              Okay
-            </button>
+          <p>A reset link has been sent to your email.</p>
+          <Link
+            className="w-full flex justify-center items-center"
+            to="/login"
+            onClick={closeModal}
+          >
+            <Button variant="primary">Okay</Button>
           </Link>
         </div>
       </Modal>
-    </form>
+    </>
   );
 };
 

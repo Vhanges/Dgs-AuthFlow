@@ -1,130 +1,95 @@
-import Header from "../components/Header";
+import { useCallback } from "react";
+import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
+import Header from "../components/Header";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
+import Divider from "../components/Divider";
 import { googleLogin } from "../services/auth";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [errorMessage, setErrorMessage] = useState("");
-  const { mutate, isPending, error } = useLogin();
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setErrorMessage("");
-      }, 2000);
+  const { formData, errorMessage, isPending, handleChange, handleSubmit } =
+    useLogin();
 
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleGoogleLogin = useCallback((e) => {
     e.preventDefault();
-
-    mutate(formData, {
-      onSuccess: (response) => {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-
-        window.location.href = `/profile`;
-      },
-      onError: (error) => {
-        console.log(error);
-
-        setTimeout(() => {
-          setErrorMessage("");
-        }, 2000);
-      },
-    });
-  };
+    googleLogin();
+  }, []);
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-6 w-full px-36.5"
+      className="flex flex-col gap-6 w-full max-w-md mx-auto px-8"
+      noValidate
     >
       <Header title="Login" subtitle="Enter email and password" />
+
       <div className="flex flex-col gap-3">
         <div className="flex flex-col w-full gap-3">
-          <div className="relative">
-            <MdOutlineMailOutline className="text-[#7E7E7E] absolute top-2.5 left-2 text-[17px]" />
-            <input
-              className="pl-8 py-2 w-full border-none outline-none border rounded-sm text-sm bg-[#f2f2f2]"
-              placeholder="Email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="relative">
-            <MdLockOutline className="text-[#7E7E7E] absolute top-2.5 left-2 text-[18px]" />
-            <input
-              className="pl-8 py-2 w-full border-none outline-none border rounded-sm text-sm bg-[#f2f2f2]"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-            />
-          </div>
+          <FormInput
+            icon={MdOutlineMailOutline}
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            disabled={isPending}
+            required
+          />
+
+          <FormInput
+            icon={MdLockOutline}
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            disabled={isPending}
+            required
+          />
         </div>
 
-        <div className="w-full flex justify-end relative">
-          {error && (
-            <p className="absolute text-red-600 text-sm left-0">
+        <div className="w-full flex justify-between items-center">
+          {errorMessage && (
+            <p className="text-red-600 text-sm" role="alert">
               {errorMessage}
             </p>
           )}
           <Link
-            className="italic underline-none font-medium text-[12px] text-black!"
+            className="italic font-medium text-xs text-black ml-auto hover:underline"
             to="/forgot-password"
           >
             Forgot Password?
           </Link>
         </div>
       </div>
+
       <div className="flex flex-col gap-4 mt-4">
-        <div className="w-full px-25">
-          <button
-            type="submit"
-            className={`cursor-pointer w-full p-2 bg-secondary rounded-md text-white font-bold text-md ${isPending ? "disable" : ""}`}
-          >
-            {isPending ? "Logging in" : "Login"}
-          </button>
-        </div>
-        <div className="flex items-center justify-center gap-5 w-full px-20">
-          <span className="flex-1 h-px bg-[#9b9b9b] rounded-md"></span>
-          <span className="text-[14px] font-medium text-[#9b9b9b]">OR</span>
-          <span className="flex-1 h-px bg-[#9b9b9b] "></span>
-        </div>
-        <div className="w-full px-25">
-          <button
-            onClick={googleLogin}
-            className={`cursor-pointer w-full p-2 bg-[#E9E9E9] rounded-md flex justify-center items-center gap-2 ${isPending ? "disable" : ""}`}
-          >
-            <FaGoogle />
-            <p className="text-sm justify-items-center font-medium">
-              Sign in with Google
-            </p>
-          </button>
-        </div>
+        <Button type="submit" disabled={isPending} variant="primary">
+          {isPending ? "Logging in..." : "Login"}
+        </Button>
+
+        <Divider />
+
+        <Button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={isPending}
+          variant="secondary"
+          icon={FaGoogle}
+        >
+          <span className="text-sm font-medium">Sign in with Google</span>
+        </Button>
       </div>
+
       <div className="flex gap-2 justify-center items-center mt-6">
         <p className="text-sm">Don't have an account?</p>
-        <Link to="/signup" className="text-sm text-black! underline!">
+        <Link
+          to="/signup"
+          className="text-sm text-black underline hover:no-underline"
+        >
           Sign up
         </Link>
       </div>
