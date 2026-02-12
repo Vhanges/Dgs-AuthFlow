@@ -5,13 +5,14 @@
   --color-primary: #45464d;
   --color-secondary: #1c5e92;
   --color-tertiary: #32a5da;
-  --color-dark-gray: ##353232;
+  --color-dark-gray: #353232;
+  --color-dirty-white: #f9f9fb;
   --font-poppins: "Poppins", "sans-serif";
 }
 
 body {
   color: black;
-  background-color: #1e2328;
+  background-color: #f9f9fb;
   overflow-y: hidden;
 }
 
