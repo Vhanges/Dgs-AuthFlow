@@ -10,7 +10,10 @@ const Header = ({ headerOne, headerTwo }) => {
 
   const profile = useProfile();
 
-  console.log(profile, "I was here");
+  if(profile.isSuccess){
+    console.log("Profile:", JSON.stringify(profile.data, null, 2));
+  }
+
 
   if (headerOne) {
     activeHeader = (

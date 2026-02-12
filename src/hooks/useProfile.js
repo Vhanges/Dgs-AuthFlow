@@ -4,15 +4,12 @@ import { useAuthStore } from "../store/useAuth";
 
 const useProfile = () => {
 
-    const token = useAuthStore((state) => state.refreshToken);
-    // const {logout} = useAuthStore();    
+    const accessToken = useAuthStore((state) => state.accessToken);
 
-    // return logout();
     return useQuery({
-            queryKey: [
-              "profile"
-            ],  
-            queryFn: profile.getProfile(token)
+            queryKey: ["profile"],  
+            queryFn: () => profile.getProfile(accessToken),
+            enabled: !!accessToken, // Only run query if token exists
           })    
 
 }
