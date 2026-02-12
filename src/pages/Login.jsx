@@ -3,10 +3,13 @@ import { FaGoogle } from "react-icons/fa";
 import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
 import { googleLogin } from "../services/auth";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
+import { useAuthStore } from "../store/useAuth";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,10 +38,15 @@ const Login = () => {
 
     mutate(formData, {
       onSuccess: (response) => {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
+        // Use Zustand store instead of localStorage
+        login(
+          response.data.accessToken,
+          response.data.refreshToken,
+          response.data.user || response.data.userData || {} // handle different API response formats
+        );
 
-        window.location.href = `/profile`;
+
+        navigate('/home');
       },
       onError: (error) => {
         console.log(error);

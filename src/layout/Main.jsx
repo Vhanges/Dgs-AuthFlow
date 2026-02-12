@@ -1,7 +1,8 @@
+import { Outlet } from "react-router-dom";
 import Header from "../components/Main/Header";
 import FooterLogo from "../assets/logo.png";
 
-const Main = ({children, headerType}) => {
+const Main = ({headerType}) => {
     return(
         <div className="bg-dirty-white text-white w-full h-screen flex flex-col items-center overflow-y-auto">
             <Header
@@ -9,7 +10,7 @@ const Main = ({children, headerType}) => {
                 headerTwo={headerType === 'header-two'}
              />
             <main className="w-full flex items-center px-10 pt-5">
-                {children}
+                <Outlet />
             </main>
 
             {headerType === 'header-one' &&
