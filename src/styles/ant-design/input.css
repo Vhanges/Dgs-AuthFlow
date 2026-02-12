@@ -1,0 +1,94 @@
+/* ===========================================
+   Ant Design Input Overrides
+   =========================================== */
+
+/* Base Input */
+/* .ant-input {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+} */
+
+/* .ant-input:hover {
+    border-color: #1c5e92;
+} */
+
+/* .ant-input:focus,
+.ant-input-focused {
+    border-color: #1c5e92;
+    box-shadow: 0 0 0 2px rgba(28, 94, 146, 0.2);
+} */
+
+/* Input with Prefix/Suffix */
+/* .ant-input-affix-wrapper {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 10px 12px;
+} */
+
+/* .ant-input-affix-wrapper:hover {
+    border-color: #1c5e92;
+} */
+
+/* .ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+    border-color: #1c5e92;
+    box-shadow: 0 0 0 2px rgba(28, 94, 146, 0.2);
+} */
+
+/* Input Prefix Icon */
+/* .ant-input-prefix {
+    color: #888;
+    margin-right: 8px;
+} */
+
+/* Input Suffix Icon */
+/* .ant-input-suffix {
+    color: #888;
+    margin-left: 8px;
+} */
+
+/* Disabled Input */
+/* .ant-input-disabled,
+.ant-input[disabled] {
+    background-color: #f5f5f5;
+    border-color: #d1d5db;
+    color: #a1a1aa;
+    cursor: not-allowed;
+} */
+
+/* Input Error State */
+/* .ant-input-status-error,
+.ant-input-status-error:hover {
+    border-color: #ef4444;
+} */
+
+/* .ant-input-status-error:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+} */
+
+/* Input Warning State */
+/* .ant-input-status-warning,
+.ant-input-status-warning:hover {
+    border-color: #f59e0b;
+} */
+
+/* .ant-input-status-warning:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+} */
+
+/* Textarea */
+/* .ant-input-textarea textarea {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 10px 12px;
+} */
+
+/* Input Placeholder */
+/* .ant-input::placeholder {
+    color: #9ca3af;
+} */

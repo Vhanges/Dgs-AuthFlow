@@ -1,0 +1,148 @@
+/* ===========================================
+   Ant Design Button Overrides
+   =========================================== */
+
+/* Base Button */
+/* .ant-btn {
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px;
+    height: auto;
+    transition: all 0.3s ease;
+} */
+
+/* Primary Button */
+/* .ant-btn-primary {
+    background-color: #1c5e92;
+    border-color: #1c5e92;
+    color: #fff;
+} */
+
+/* .ant-btn-primary:hover,
+.ant-btn-primary:focus {
+    background-color: #28587e;
+    border-color: #28587e;
+} */
+
+/* .ant-btn-primary:active {
+    background-color: #164a73;
+    border-color: #164a73;
+} */
+
+/* Default Button */
+/* .ant-btn-default {
+    background-color: #fff;
+    border-color: #d1d5db;
+    color: #45464d;
+} */
+
+/* .ant-btn-default:hover,
+.ant-btn-default:focus {
+    background-color: #f9f9f9;
+    border-color: #1c5e92;
+    color: #1c5e92;
+} */
+
+/* Dashed Button */
+/* .ant-btn-dashed {
+    border-style: dashed;
+    border-color: #d1d5db;
+    color: #45464d;
+} */
+
+/* .ant-btn-dashed:hover,
+.ant-btn-dashed:focus {
+    border-color: #1c5e92;
+    color: #1c5e92;
+} */
+
+/* Text Button */
+/* .ant-btn-text {
+    background-color: transparent;
+    border: none;
+    color: #45464d;
+} */
+
+/* .ant-btn-text:hover,
+.ant-btn-text:focus {
+    background-color: rgba(28, 94, 146, 0.1);
+    color: #1c5e92;
+} */
+
+/* Link Button */
+/* .ant-btn-link {
+    color: #1c5e92;
+    border: none;
+    padding: 0;
+} */
+
+/* .ant-btn-link:hover,
+.ant-btn-link:focus {
+    color: #28587e;
+} */
+
+/* Danger Button */
+/* .ant-btn-dangerous {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
+} */
+
+/* .ant-btn-dangerous:hover,
+.ant-btn-dangerous:focus {
+    background-color: #dc2626;
+    border-color: #dc2626;
+} */
+
+/* Ghost Button */
+/* .ant-btn-background-ghost.ant-btn-primary {
+    background-color: transparent;
+    border-color: #1c5e92;
+    color: #1c5e92;
+} */
+
+/* .ant-btn-background-ghost.ant-btn-primary:hover {
+    background-color: rgba(28, 94, 146, 0.1);
+} */
+
+/* Disabled Button */
+/* .ant-btn-disabled,
+.ant-btn[disabled] {
+    background-color: #f5f5f5;
+    border-color: #d1d5db;
+    color: #a1a1aa;
+    cursor: not-allowed;
+} */
+
+/* Loading Button */
+/* .ant-btn-loading {
+    opacity: 0.7;
+    cursor: wait;
+} */
+
+/* Button Sizes */
+/* .ant-btn-lg {
+    padding: 12px 24px;
+    font-size: 16px;
+} */
+
+/* .ant-btn-sm {
+    padding: 4px 12px;
+    font-size: 12px;
+} */
+
+/* Block Button */
+/* .ant-btn-block {
+    width: 100%;
+} */
+
+/* Button Icon */
+/* .ant-btn > .anticon {
+    font-size: 14px;
+} */
+
+/* .ant-btn > .anticon + span,
+.ant-btn > span + .anticon {
+    margin-left: 8px;
+} */

@@ -1,0 +1,53 @@
+/* ===========================================
+   Ant Design Modal Overrides
+   =========================================== */
+
+/* Modal Content */
+/* .ant-modal-content {
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+} */
+
+/* Modal Header */
+/* .ant-modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 24px;
+} */
+
+/* Modal Title */
+/* .ant-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #45464d;
+} */
+
+/* Modal Body */
+/* .ant-modal-body {
+    padding: 24px;
+} */
+
+/* Modal Footer */
+/* .ant-modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 16px 24px;
+} */
+
+/* Modal Close Button */
+/* .ant-modal-close {
+    top: 16px;
+    right: 16px;
+} */
+
+/* .ant-modal-close-x {
+    font-size: 16px;
+    color: #888;
+} */
+
+/* .ant-modal-close:hover .ant-modal-close-x {
+    color: #1c5e92;
+} */
+
+/* Modal Mask (Backdrop) */
+/* .ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0.5);
+} */

@@ -1,11 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
+@import './styles/ant-design/index.css';
 
 @theme {
   --color-primary: #45464d;
   --color-secondary: #1c5e92;
   --color-tertiary: #32a5da;
-  --color-dark-gray: ##353232;
+  --color-dark-gray: #353232;
+  --color-dirty-white: #fbfbfb;
   --font-poppins: "Poppins", "sans-serif";
 }
 
@@ -13,6 +15,7 @@ body {
   color: black;
   background-color: #1e2328;
   overflow-y: hidden;
+  font-family: var(--font-poppins);
 }
 
 ::-webkit-scrollbar {
@@ -31,4 +34,19 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.bg-gradient-header {
+  background: linear-gradient(
+    90deg,
+    #28587E 2%,
+    #2B6A9C 7%,
+    #7BA2C0 15%,
+    #E6EEF3 30%,
+    #DEDEFF 52%,
+    #FBFBFB 71%,
+    #B1CBDA 82%,
+    #29618D 97%,
+    #1C5E92 100%
+  );
 }
