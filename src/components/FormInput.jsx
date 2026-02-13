@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Input } from "antd";
 
 const FormInput = forwardRef(
   (
@@ -17,13 +18,7 @@ const FormInput = forwardRef(
   ) => {
     return (
       <div className="relative">
-        {Icon && (
-          <Icon
-            className="text-gray-500 absolute top-2.5 left-2 text-[17px]"
-            aria-hidden="true"
-          />
-        )}
-        <input
+        <Input
           ref={ref}
           className={`${Icon ? "pl-8" : "pl-3"} py-2 w-full border-none outline-none rounded-sm text-sm bg-gray-100 focus:ring-2 focus:ring-secondary ${className}`}
           placeholder={placeholder}

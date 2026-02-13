@@ -1,4 +1,6 @@
-const Button = ({
+import { Button } from "antd";
+
+const AntButton = ({
   children,
   type = "button",
   onClick,
@@ -8,11 +10,11 @@ const Button = ({
   icon: Icon,
 }) => {
   const baseStyles =
-    "w-full p-2 rounded-md font-bold text-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+    "w-full rounded-md font-bold text-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-secondary text-white hover:bg-secondary/90",
-    secondary: "bg-gray-100 hover:bg-gray-200",
+    primary: "bg-secondary! text-white! border-none! font-semibold!",
+    secondary: "bg-gray-100 hover:bg-gray-200!",
   };
 
   return (
@@ -20,7 +22,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${baseStyles} ${variants[variant]} ${className} ${Icon ? "flex justify-center items-center gap-2" : ""}`}
+      className={`${baseStyles} ${variants[variant]} ${className} ${Icon ? "cursor-pointer flex justify-center items-center gap-2  p-2" : "p-2"}`}
     >
       {Icon && <Icon />}
       {children}
@@ -28,4 +30,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default AntButton;

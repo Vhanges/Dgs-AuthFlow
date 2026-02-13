@@ -3,7 +3,7 @@ import { MdLockOutline } from "react-icons/md";
 import { Modal } from "antd";
 import Header from "../components/Header";
 import FormInput from "../components/FormInput";
-import Button from "../components/Button";
+import AntButton from "../components/Button";
 import { useResetPassword } from "../hooks/useResetPassword";
 
 const SetUpNewPassword = () => {
@@ -55,9 +55,9 @@ const SetUpNewPassword = () => {
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
-          <Button type="submit" disabled={isPending} variant="primary">
+          <AntButton type="submit" disabled={isPending} variant="primary">
             {isPending ? "Resetting..." : "Confirm"}
-          </Button>
+          </AntButton>
         </div>
       </form>
 
@@ -81,7 +81,7 @@ const SetUpNewPassword = () => {
             to="/login"
             onClick={closeModal}
           >
-            <Button variant="primary">Okay</Button>
+            <AntButton variant="primary">Okay</AntButton>
           </Link>
         </div>
       </Modal>

@@ -1,17 +1,32 @@
+import { Button, Form, Input } from "antd";
 import { useCallback } from "react";
-import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
-import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
-import Header from "../components/Header";
-import FormInput from "../components/FormInput";
-import Button from "../components/Button";
+import { Link, useNavigate } from "react-router-dom";
+import AntButton from "../components/Button";
 import Divider from "../components/Divider";
-import { googleLogin } from "../services/auth";
-import { useLogin } from "../hooks/useLogin";
+import Header from "../components/Header";
+import { googleLogin, useLoginApi } from "../services/auth";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
+import { useAuthStore } from "../store/useAuth";
 
 const Login = () => {
-  const { formData, errorMessage, isPending, handleChange, handleSubmit } =
-    useLogin();
+  const loginApi = useLoginApi();
+  const { login } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleSubmit = (values) => {
+    loginApi.mutate(values, {
+      onSuccess: ({ data }) => {
+        login(
+          data.accessToken,
+          data.refreshToken,
+          data.user || data.userData || {},
+        );
+        navigate("/home");
+      },
+      onError: () => {},
+    });
+  };
 
   const handleGoogleLogin = useCallback((e) => {
     e.preventDefault();
@@ -19,70 +34,102 @@ const Login = () => {
   }, []);
 
   return (
-    <form
-      onSubmit={handleSubmit}
+    <div
       className="flex flex-col gap-6 w-full max-w-md mx-auto px-8"
       noValidate
     >
       <Header title="Login" subtitle="Enter email and password" />
+      <Form
+        onFinish={handleSubmit}
+        initialValues={{
+          email: "vovok85181@homuno.com",
+          password: "password1234",
+        }}
+        layout="vertical"
+        disabled={loginApi.isPending}
+        className="flex flex-col gap-6"
+      >
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col w-full gap-3">
+            <Form.Item className="flex! flex-col! gap-4!">
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                  {
+                    type: "email",
+                  },
+                ]}
+                className="mb-10px!"
+              >
+                <Input
+                  prefix={
+                    <MailOutlined
+                      color="#797979"
+                      className="text-[#797979]"
+                      style={{ color: "#797979" }}
+                    />
+                  }
+                  placeholder="Email"
+                  className="mb-[10px]!"
+                />
+              </Form.Item>
 
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col w-full gap-3">
-          <FormInput
-            icon={MdOutlineMailOutline}
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            disabled={isPending}
-            required
-          />
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your password!" },
+                ]}
+              >
+                <Input.Password
+                  prefix={
+                    <LockOutlined
+                      color="#797979"
+                      className="text-[#797979]"
+                      style={{ color: "#797979" }}
+                    />
+                  }
+                  placeholder="Password"
+                />
+              </Form.Item>
+            </Form.Item>
+          </div>
 
-          <FormInput
-            icon={MdLockOutline}
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            disabled={isPending}
-            required
-          />
+          <div className="w-full flex justify-between items-center">
+            <Link
+              className="cursor-pointer italic font-medium text-xs text-black! ml-auto hover:underline"
+              to="/forgot-password"
+            >
+              Forgot Password?
+            </Link>
+          </div>
         </div>
-
-        <div className="w-full flex justify-between items-center">
-          {errorMessage && (
-            <p className="text-red-600 text-sm" role="alert">
-              {errorMessage}
-            </p>
-          )}
-          <Link
-            className="italic font-medium text-xs text-black ml-auto hover:underline"
-            to="/forgot-password"
+        <center className="flex flex-col gap-4 items-center">
+          <Button
+            size="large"
+            loading={loginApi.isPending}
+            htmlType="submit"
+            type="primary"
+            block
+            className="max-w-full"
           >
-            Forgot Password?
-          </Link>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-4 mt-4">
-        <Button type="submit" disabled={isPending} variant="primary">
-          {isPending ? "Logging in..." : "Login"}
-        </Button>
-
-        <Divider />
-
-        <Button
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={isPending}
-          variant="secondary"
-          icon={FaGoogle}
-        >
-          <span className="text-sm font-medium">Sign in with Google</span>
-        </Button>
-      </div>
+            Login
+          </Button>
+          <Divider />
+          <AntButton
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loginApi.isPending}
+            variant="secondary"
+            className="cursor-pointer bg-gray-300 flex justify-center items-center rounded-md p-2 gap-2"
+          >
+            <FaGoogle />
+            <span className="text-sm font-medium pb-0.5">
+              Sign in with Google
+            </span>
+          </AntButton>
+        </center>
+      </Form>
 
       <div className="flex gap-2 justify-center items-center mt-6">
         <p className="text-sm">Don't have an account?</p>
@@ -93,7 +140,7 @@ const Login = () => {
           Sign up
         </Link>
       </div>
-    </form>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
-import { signUp } from "../services/auth"; // Adjust import based on your service
-
+import { signUp } from "../services/auth";
 export const useSignUp = () => {
   const [formData, setFormData] = useState({
     email: "",

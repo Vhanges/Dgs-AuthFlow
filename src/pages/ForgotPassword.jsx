@@ -4,7 +4,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { Modal } from "antd";
 import Header from "../components/Header";
 import FormInput from "../components/FormInput";
-import Button from "../components/Button";
+import AntButton from "../components/Button";
 import { useForgotPassword } from "../hooks/useForgotPassword";
 
 const ForgotPassword = () => {
@@ -52,9 +52,9 @@ const ForgotPassword = () => {
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
-          <Button type="submit" disabled={isPending} variant="primary">
+          <AntButton type="submit" disabled={isPending} variant="primary">
             {isPending ? "Sending Email..." : "Send Reset Link"}
-          </Button>
+          </AntButton>
 
           <Link
             to="/login"
@@ -86,7 +86,7 @@ const ForgotPassword = () => {
             to="/login"
             onClick={closeModal}
           >
-            <Button variant="primary">Okay</Button>
+            <AntButton variant="primary">Okay</AntButton>
           </Link>
         </div>
       </Modal>

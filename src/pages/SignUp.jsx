@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import Header from "../components/Header";
 import FormInput from "../components/FormInput";
-import Button from "../components/Button";
+import AntButton from "../components/Button";
 import { useSignUp } from "../hooks/useSignup";
 
 const SignUp = () => {
@@ -76,7 +76,12 @@ const SignUp = () => {
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
-          <Button type="submit" disabled={isPending} variant="primary">
+          <Button
+            onClick={handleSubmit}
+            type="primary"
+            disabled={isPending}
+            size="large"
+          >
             {isPending ? "Signing up..." : "Sign Up"}
           </Button>
 
@@ -110,7 +115,7 @@ const SignUp = () => {
             to="/login"
             onClick={closeModal}
           >
-            <Button variant="primary">Okay</Button>
+            <button variant="primary">Okay</button>
           </Link>
         </div>
       </Modal>

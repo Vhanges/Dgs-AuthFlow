@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { login as loginService } from "../services/auth";
-import { useAuthStore } from "../store/authStore"; // Adjust the import path to your store
+import { useAuthStore } from "../store/useAuth";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -12,14 +12,15 @@ export const useLogin = () => {
     email: "",
     password: "",
   });
+
   const [errorMessage, setErrorMessage] = useState("");
 
   const mutation = useMutation({
     mutationFn: loginService,
   });
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
+  const handleChange = useCallback((values) => {
+    const { name, value } = values.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -27,16 +28,15 @@ export const useLogin = () => {
   }, []);
 
   const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
+    (values) => {
+      values.preventDefault();
 
       mutation.mutate(formData, {
         onSuccess: (data) => {
-          // Use Zustand store instead of localStorage
           login(
-            data.accessToken,
-            data.refreshToken,
-            data.user || data.userData || {}, // handle different API response formats
+            data.data.accessToken,
+            data.data.refreshToken,
+            data.data.user || data.userData || {},
           );
           navigate("/home");
         },

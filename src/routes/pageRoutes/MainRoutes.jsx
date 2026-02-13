@@ -1,30 +1,59 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Auth } from "../validateAuth";
 import { useAuthStore } from "../../store/useAuth";
 import Main from "../../layout/Main";
 import Home from "../../pages/Home";
 import EditProfile from "../../pages/EditProfile";
-import AuthRoutes from "./AuthRoutes";
+import AuthLayout from "../../layout/AuthLayout";
+import SignUp from "../../pages/SignUp";
+import ForgotPassword from "../../pages/ForgotPassword";
+import SetUpNewPassword from "../../pages/SetUpNewPassword";
+import Login from "../../pages/Login";
 
 const MainRoutes = () => {
+  const { accessToken, userData } = useAuthStore();
+  const isAuthenticated = accessToken && userData;
+
   return (
     <Routes>
-      {/* Default redirect */}
-      <Route path="*" element={<Navigate to="/login" />} />
+      {isAuthenticated ? (
+        <>
+          {/* Authenticated routes */}
+          <Route element={<Main headerType="header-one" />}>
+            <Route path="/home" element={<Home />} />
+          </Route>
 
-      {/* Unauthenticated routes */}
-      {AuthRoutes()}
+          <Route element={<Main headerType="header-two" />}>
+            <Route path="/edit-profile" element={<EditProfile />} />
+          </Route>
 
-      {/* Authenticated routes */}
-      <Route element={<Auth store={useAuthStore} redirect="/login" />}>
-        <Route element={<Main headerType="header-one" />}>
-          <Route path="/home" element={<Home />} />
-        </Route>
+          {/* Redirect auth pages to home if already authenticated */}
+          <Route path="/login" element={<Navigate to="/home" replace />} />
+          <Route path="/signup" element={<Navigate to="/home" replace />} />
+          <Route
+            path="/forgot-password"
+            element={<Navigate to="/home" replace />}
+          />
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        </>
+      ) : (
+        <>
+          {/* Unauthenticated routes */}
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/forgot-password/set-up-new-password"
+              element={<SetUpNewPassword />}
+            />
+          </Route>
 
-        <Route element={<Main headerType="header-two" />}>
-          <Route path="/edit-profile" element={<EditProfile />} />
-        </Route>
-      </Route>
+          {/* Redirect everything else to login if not authenticated */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </>
+      )}
     </Routes>
   );
 };
