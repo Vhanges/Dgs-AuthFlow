@@ -1,20 +1,27 @@
+import { useMemo } from "react";
+import useGallery from "../hooks/useGallery";
+
 const Home = () => {
+    const domain_url = import.meta.env.VITE_API_DOMAIN_BASE_URL;
+    const gallery = useGallery();
     const test = true;
 
-    const images = [
-        "https://via.assets.so/img.jpg?w=200&h=400&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=300&h=500&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=150&h=250&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=400&h=600&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=200&h=400&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=300&h=500&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=150&h=250&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=400&h=600&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=200&h=400&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=300&h=500&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=150&h=250&bg=e5e7eb&f=png",
-        "https://via.assets.so/img.jpg?w=400&h=600&bg=e5e7eb&f=png",
-    ];
+    // Log gallery response for debugging
+    if (gallery.isSuccess) {
+        console.log("🖼️ GALLERY SUCCESS - API Response:", JSON.stringify(gallery.data, null, 2));
+    }
+    
+    if (gallery.error) {
+        console.log("❌ GALLERY ERROR:", gallery.error);
+    }
+
+    // Use real gallery data or fallback to empty array
+    const galleryImages = useMemo(() => {
+        return (gallery.data || []).map(item => ({
+            ...item,
+            src: `${import.meta.env.VITE_API_BASE_URL}${item.url}`
+        }));
+    }, [gallery.data]);
 
     return (
         <div
@@ -23,22 +30,27 @@ const Home = () => {
             } rounded-xl border border-gray-300 shadow-2xl overflow-y-auto`}
         >
             <div className="w-full sticky top-0 z-10 p-5 bg-white border-b border-gray-200">
-                <h4 className="text-primary text-2xl font-bold">Gallery</h4>
+                <h4 className="text-primary text-2xl font-bold">
+                    Gallery
+                </h4>
             </div>
-            {test ? (
+            {gallery.isLoading ? (
                 <div className="flex flex-wrap gap-4 justify-start p-10">
-                    {images.map((src, index) => (
+                    <div className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"></div>
+                    <div className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"></div>
+                </div>
+            ) : galleryImages.length > 0 ? (
+                <div className="flex flex-wrap gap-4 justify-start p-10">
+                    {galleryImages.map((item) => (
                         <div
-                            key={index}
+                            key={item.photo_id}
                             className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"
                         >
                             <img
-                                src={src}
-                                alt={`placeholder-${index}`}
+                                src={domain_url + item.url}
+                                alt={`photo-${item.photo_id}`}
                                 className="w-full h-full"
-                                style={{
-                                    objectFit: "contain",
-                                }}
+                                style={{ objectFit: "cover" }}
                             />
                         </div>
                     ))}

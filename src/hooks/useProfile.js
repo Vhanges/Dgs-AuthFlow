@@ -3,13 +3,16 @@ import profile from "../services/profile";
 import { useAuthStore } from "../store/useAuth";
 
 const useProfile = () => {
-  const token = useAuthStore((state) => state.refreshToken);
-  // const { logout } = useAuthStore();
+  const accessToken = useAuthStore((state) => state.accessToken);
 
-  // return logout();
+  // const {login} = useAuthStore();
+
+  // return login();
+
   return useQuery({
     queryKey: ["profile"],
-    queryFn: profile.getProfile(token),
+    queryFn: () => profile.getProfile(accessToken),
+    enabled: !!accessToken,
     refetchOnWindowFocus: false,
   });
 };

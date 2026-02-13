@@ -10,7 +10,6 @@ const Header = ({ headerOne, headerTwo }) => {
 
   const profile = useProfile();
 
-  console.log(profile, "I was here");
 
   if (headerOne) {
     activeHeader = (
@@ -23,8 +22,8 @@ const Header = ({ headerOne, headerTwo }) => {
               className="h-32 w-32 rounded-full"
             />
             <span className="block ">
-              <h5 className="text-3xl text-white font-bold">@hello</h5>
-              <p>20, bowmbowm@work.om</p>
+              <h5 className="text-3xl text-white font-bold">{profile.data?.display_name ? '@' + profile.data.display_name  : "Super Unconfigured User"}</h5>
+              <p>{profile.data?.age ?? ""} * {profile.data?.email ?? ""}</p>
             </span>
           </div>
           <div className="flex flex-col gap-3">
