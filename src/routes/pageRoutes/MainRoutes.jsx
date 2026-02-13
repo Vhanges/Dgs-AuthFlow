@@ -9,9 +9,6 @@ import AuthRoutes from "./AuthRoutes";
 const MainRoutes = () => {
   return (
     <Routes>
-      {/* Default redirect */}
-      <Route path="*" element={<Navigate to="/login" />} />
-
       {/* Unauthenticated routes */}
       {AuthRoutes()}
 
@@ -24,7 +21,10 @@ const MainRoutes = () => {
         <Route element={<Main headerType="header-two" />}>
           <Route path="/edit-profile" element={<EditProfile />} />
         </Route>
+        
       </Route>
+
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 };

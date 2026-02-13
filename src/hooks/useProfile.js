@@ -9,10 +9,12 @@ const useProfile = () => {
     // const {login} = useAuthStore();
 
     // return login();
+
     return useQuery({
             queryKey: ["profile"],  
             queryFn: () => profile.getProfile(accessToken),
-            enabled: !!accessToken, // Only run query if token exists
+            enabled: !!accessToken,
+            refetchOnWindowFocus: false, 
           })    
 
 }

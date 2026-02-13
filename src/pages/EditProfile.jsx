@@ -40,7 +40,7 @@ const EditProfile = () => {
                         <form className="w-full flex flex-col gap-4"action="">
                             <input type="text" name="text" id="" placeholder="Enter Username (e.g @superjames)" className="w-full bg-gray-200 py-2 px-2 rounded-sm "/>
                             <input type="number" name="number" id="" placeholder="Enter Age (e.g 21)" className="w-full bg-gray-200 py-2 px-2 rounded-sm "/>
-                            <input type="email" name="email" id="" placeholder="Enter Email Address (e.g jamesmith@gmail.com)" className="w-full bg-gray-200 py-2 px-2 rounded-sm "/>
+                            <input disabled type="email" name="email" id="" placeholder="Enter Email Address (e.g jamesmith@gmail.com)" className="w-full bg-gray-200 py-2 px-2 rounded-sm "/>
                             <span className="w-full flex gap-2">
                                 <button
                                     type="button"
