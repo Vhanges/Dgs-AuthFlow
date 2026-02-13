@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import gallery from "../services/gallery";
+import gallery from "../services/galleryService";
 import { useAuthStore } from "../store/useAuth";
 
 const useGallery = () => {

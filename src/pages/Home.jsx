@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import useGallery from "../hooks/useGallery";
 
 const Home = () => {
-    const domain_url = import.meta.env.VITE_API_DOMAIN_BASE_URL;
+    const domain_url = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
     const gallery = useGallery();
     const test = true;
 
@@ -17,7 +17,12 @@ const Home = () => {
 
     // Use real gallery data or fallback to empty array
     const galleryImages = useMemo(() => {
-        return (gallery.data || []).map(item => ({
+        // Handle different possible response structures
+        const photos = Array.isArray(gallery.data) 
+            ? gallery.data 
+            : gallery.data?.photos || gallery.data?.data || [];
+            
+        return photos.map(item => ({
             ...item,
             src: `${import.meta.env.VITE_API_BASE_URL}${item.url}`
         }));

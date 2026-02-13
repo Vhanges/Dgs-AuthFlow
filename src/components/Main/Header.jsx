@@ -41,7 +41,7 @@ const Header = ({ headerOne, headerTwo }) => {
           </div>
         </header>
 
-        <UploadPhotoModal isOpen={isModalOpen} />
+        <UploadPhotoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </>
     );
   } else if (headerTwo) {
