@@ -1,7 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { useMutation } from "@tanstack/react-query";
-
 const api = import.meta.env.VITE_API_BASE_URL;
 
 export const useLoginApi = () =>
@@ -15,27 +13,6 @@ export const useLoginApi = () =>
         credentials: "include",
         body: JSON.stringify({ email, password }),
       });
-      export const useLoginApi = () =>
-        useMutation({
-          mutationFn: async ({ email, password }) => {
-            const response = await fetch(`${api}/auth/login`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-              body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
-              const error = await response.json();
-              throw new Error(error.message || "Login failed");
-            }
-
-            return response.json();
-          },
-        });
-      return response.json();
     },
   });
 
