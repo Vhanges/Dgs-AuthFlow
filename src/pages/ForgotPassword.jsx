@@ -1,60 +1,76 @@
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
-import { Modal } from "antd";
+import { Modal, Form, Input, Button } from "antd";
 import Header from "../components/Header";
-import FormInput from "../components/FormInput";
 import AntButton from "../components/Button";
-import { useForgotPassword } from "../hooks/useForgotPassword";
+import { useForgotPasswordApi } from "../services/auth";
 
 const ForgotPassword = () => {
-  const {
-    email,
-    errorMessage,
-    isModalOpen,
-    isPending,
-    handleEmailChange,
-    handleSubmit,
-    closeModal,
-  } = useForgotPassword();
+  const forgotPasswordRequestApi = useForgotPasswordApi();
+  const { mutate, isPending } = forgotPasswordRequestApi;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmit = (values) => {
+    mutate(values, {
+      onSuccess: () => {
+        console.log("Success");
+        setIsModalOpen(true);
+      },
+      onError: () => {
+        console.log("Failed");
+      },
+    });
+  };
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
+      <Form
+        onFinish={handleSubmit}
         className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
         noValidate
       >
         <Header
           title="Forgot Password"
-          subtitle="The instructions will be sent on the email you provide."
+          subtitle="The instructions will be sent to the email you provide."
         />
 
         <div className="flex flex-col gap-3">
-          <FormInput
-            icon={MdOutlineMailOutline}
-            type="email"
+          <Form.Item
             name="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="Email"
-            disabled={isPending}
-            required
-          />
-
-          {errorMessage && (
-            <div className="w-full">
-              <p className="text-sm text-red-600" role="alert">
-                {errorMessage}
-              </p>
-            </div>
-          )}
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input
+              prefix={
+                <MdOutlineMailOutline
+                  color="#797979"
+                  className="text-[#797979]"
+                  style={{ color: "#797979" }}
+                />
+              }
+              placeholder="Email"
+              disabled={isPending}
+            />
+          </Form.Item>
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
-          <AntButton type="submit" disabled={isPending} variant="primary">
+          <Button
+            htmlType="submit"
+            type="primary"
+            disabled={isPending}
+            size="large"
+            block
+            className="max-w-full"
+          >
             {isPending ? "Sending Email..." : "Send Reset Link"}
-          </AntButton>
+          </Button>
 
           <Link
             to="/login"
@@ -64,7 +80,7 @@ const ForgotPassword = () => {
             <span>Back to Login</span>
           </Link>
         </div>
-      </form>
+      </Form>
 
       <Modal
         title="Password Reset Email Sent"

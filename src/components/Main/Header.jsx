@@ -2,13 +2,25 @@ import { useState } from "react";
 import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 import UploadPhotoModal from "../modals/UploadPhotoModal";
-import useProfile from "../../hooks/useProfile";
+import { useGetProfile } from "../../services/userProfileService";
+import { useQuery } from "@tanstack/react-query";
 
 const Header = ({ headerOne, headerTwo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   let activeHeader;
 
-  const profile = useProfile();
+
+  const { data: profile, isLoading, isError } = useQuery({
+    queryFn: useGetProfile, 
+    queryKey: ['profile'],
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    cacheTime: 0,
+    onSuccess: (data) => {
+      console.log("HELLO", data)
+    }
+  })
+
 
 
   if (headerOne) {
@@ -22,8 +34,8 @@ const Header = ({ headerOne, headerTwo }) => {
               className="h-32 w-32 rounded-full"
             />
             <span className="block ">
-              <h5 className="text-3xl text-white font-bold">{profile.data?.display_name ? '@' + profile.data.display_name  : "Super Unconfigured User"}</h5>
-              <p>{profile.data?.age ?? ""} * {profile.data?.email ?? ""}</p>
+              <h5 className="text-3xl text-white font-bold">{profile?.display_name ? '@' + profile.display_name  : "Super Unconfigured User"}</h5>
+              <p>{profile?.age ?? ""} * {profile?.email ?? ""}</p>
             </span>
           </div>
           <div className="flex flex-col gap-3">

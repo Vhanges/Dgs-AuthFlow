@@ -3,12 +3,12 @@ import gallery from "../services/galleryService";
 import { useAuthStore } from "../store/useAuth";
 
 const useGallery = () => {
-    const accessToken = useAuthStore((state) => state.accessToken);
+    const userData = useAuthStore((state) => state.userData);
 
     return useQuery({
         queryKey: ["gallery"],  
-        queryFn: () => gallery.getGallery(accessToken),
-        enabled: !!accessToken,
+        queryFn: () => gallery.getGallery(),
+        enabled: !!userData,
         refetchOnWindowFocus: false,
     })    
 }

@@ -13,13 +13,16 @@ const Login = () => {
   const loginApi = useLoginApi();
   const { login } = useAuthStore();
   const navigate = useNavigate();
-
+  
+  
   const handleSubmit = (values) => {
     loginApi.mutate(values, {
       onSuccess: ({ data }) => {
+
+        console.log("SUPER DATA", data )
+        
+
         login(
-          data.accessToken,
-          data.refreshToken,
           data.user || data.userData || {},
         );
         navigate("/home");

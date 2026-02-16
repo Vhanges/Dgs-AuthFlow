@@ -33,9 +33,9 @@ export const useLogin = () => {
 
       mutation.mutate(formData, {
         onSuccess: (data) => {
+          // Cookie is set by backend automatically
+          // Only store user data locally
           login(
-            data.data.accessToken,
-            data.data.refreshToken,
             data.data.user || data.userData || {},
           );
           navigate("/home");

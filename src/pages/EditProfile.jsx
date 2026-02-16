@@ -6,11 +6,9 @@ import { message } from "antd";
 import AntButton from "../components/Button";
 import useProfile from "../hooks/useProfile";
 import { useEditUserProfile } from "../services/userProfileService";
-import { useAuthStore } from "../store/useAuth";
 
 const EditProfile = () => {
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
-  const { accessToken } = useAuthStore();
   const isInitialized = useRef(false);
   
   // Fetch profile data
@@ -57,7 +55,6 @@ const EditProfile = () => {
     
     try {
       await editProfileMutation.mutateAsync({
-        token: accessToken,
         display_name: formData.display_name,
         age: parseInt(formData.age) || 0
       });

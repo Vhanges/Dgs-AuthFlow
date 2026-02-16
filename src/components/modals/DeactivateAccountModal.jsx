@@ -1,16 +1,17 @@
 import { Modal, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDeactivateAccount } from '../../services/userProfileService';
+import { logoutApi } from '../../services/auth';
 import { useAuthStore } from '../../store/useAuth';
 
 export default function DeactivateAccountModal({openModal, onClose}) {
     const navigate = useNavigate();
-    const { accessToken, logout } = useAuthStore();
+    const { logout } = useAuthStore();
     const deactivateMutation = useDeactivateAccount();
 
     const handleDeactivate = async () => {
         try {
-            await deactivateMutation.mutateAsync(accessToken);
+            await deactivateMutation.mutateAsync();
             
             // Show success message
             message.success({
@@ -19,7 +20,9 @@ export default function DeactivateAccountModal({openModal, onClose}) {
             });
 
             // Wait 3 seconds before logging out
-            setTimeout(() => {
+            setTimeout(async () => {
+                // Clear cookie on backend
+                try { await logoutApi(); } catch { /* ignore */ }
                 // Logout and clear all user data
                 logout();
                 

@@ -4,29 +4,25 @@ import { persist } from "zustand/middleware";
 export const useAuthStore = create(
   persist(
     (set, get) => ({
-      accessToken: null,
-      refreshToken: null,
       userData: null,
       
-      // Login action
-      login: (accessToken, refreshToken, userData = null) => 
-        set({ accessToken, refreshToken, userData }),
+      // Login action - only store user data, cookie handles auth
+      login: (userData) => 
+        set({ userData }),
       
       // Logout action  
       logout: () => 
-        set({ accessToken: null, refreshToken: null, userData: null }),
+        set({ userData: null }),
       
       // Check if user is authenticated
       isAuthenticated: () => {
-        const { accessToken, userData } = get();
-        return !!(accessToken && userData);
+        const { userData } = get();
+        return !!userData;
       },
     }),
     {
       name: "auth-storage",
       partialize: (state) => ({
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         userData: state.userData
       })
     }

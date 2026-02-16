@@ -1,12 +1,10 @@
 import { Modal, Form, Upload, message, Button } from "antd";
 import { DownloadOutlined, UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useUploadGalleryPhotos } from "../../services/galleryService";
-import { useAuthStore } from "../../store/useAuth";
 
 
 const UploadPhotoModal = ({ isOpen, onClose}) => {
   const [form] = Form.useForm();
-  const { accessToken } = useAuthStore();
   const uploadMutation = useUploadGalleryPhotos();
   
   // We use this merely to trigger re-renders for the preview
@@ -18,7 +16,6 @@ const UploadPhotoModal = ({ isOpen, onClose}) => {
       const filesToUpload = values.photos.map(file => file.originFileObj);
 
       await uploadMutation.mutate({
-        token: accessToken,
         photos: filesToUpload
       });
 

@@ -1,56 +1,34 @@
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-
-const api = import.meta.env.VITE_API_BASE_URL;
-const noVerAPI = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+import { useMutation, useQuery } from "@tanstack/react-query";
+import ApiService from "./axiosConfig";
 
 
 export const useUploadGalleryPhotos = () => 
     useMutation({
-        mutationFn: async ({ token, photos }) => {
+        mutationFn: async ({ photos }) => {
             const formData = new FormData();
             
             // Append all photos to FormData
-            photos.forEach((photo, index) => {
+            photos.forEach((photo) => {
                 formData.append('photos', photo);
             });
 
-            const response = await axios.post(`${api}/upload`, formData, {
+            const response = await ApiService.versionedApi.post("/upload", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    "Authorization": `Bearer ${token}`
                  }
             });
-
-            return response.data;
-        }
-    });
-
-export const useGetAllGalleryPhotos = () => 
-    useMutation({
-        mutationFn: async (token) => {
-            const response = axios.get(`${noVerAPI}/upload`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                }
-            })
 
             return response;
         }
     });
 
-// Default export for non-hook usage
-const galleryService = {
-    getGallery: async (token) => {
-        const response = await axios.get(`${api}/upload`, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        return response.data;
-    }
-};
+export const useGetAllGalleryPhotos = () => 
+    useQuery({
+        queryFn: async () => {
+            const response = await ApiService.versionedApi.get("/upload");
+            return response;
+        },
+        queryKey: "get-all-photos"
+    });
 
-export default galleryService;
+

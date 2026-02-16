@@ -10,8 +10,8 @@ import SetUpNewPassword from "../../pages/SetUpNewPassword";
 import Login from "../../pages/Login";
 
 const MainRoutes = () => {
-  const { accessToken, userData } = useAuthStore();
-  const isAuthenticated = accessToken && userData;
+  const { userData } = useAuthStore();
+  const isAuthenticated = !!userData;
 
   return (
     <Routes>
