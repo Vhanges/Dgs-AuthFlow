@@ -6,42 +6,44 @@ import { message } from "antd";
 import AntButton from "../components/Button";
 import { useEditUserProfile, useGetProfile } from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
+const PLACEHOLDER_IMAGE = "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
+
 const EditProfile = () => {
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
-  const {userData: profile, setUserData }= useAuthStore()
-  const { data: updatedProfile, refetch: refetchUserProfile } = useGetProfile();
+  const { userData: profile, setUserData } = useAuthStore();
+  const { data: updatedProfile, refetch: refetchUserProfile, isLoading } = useGetProfile();
 
   const isInitialized = useRef(false);
-  let isLoading = false;
-
-  // Fetch profile data
-  const editProfileMutation = useEditUserProfile();
-  const getProfile = useGetProfile();
 
   // Form state
   const [formData, setFormData] = useState({
     display_name: "",
     age: "",
-    email: ""
+    email: "",
   });
+
+  // Fetch profile data
+  const editProfileMutation = useEditUserProfile();
 
   // Update form data when profile loads (only once)
   useEffect(() => {
     if (profile && !isInitialized.current) {
-      setFormData({
-        display_name: profile.display_name || "",
-        age: profile.age || "",
-        email: profile.email || ""
-      });
+      setTimeout(() => {
+        setFormData({
+          display_name: profile.display_name || "",
+          age: profile.age || "",
+          email: profile.email || ""
+        });
+      }, 0);
       isInitialized.current = true;
     }
   }, [profile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -49,28 +51,27 @@ const EditProfile = () => {
     setFormData({
       display_name: "",
       age: "",
-      email: ""
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       await editProfileMutation.mutateAsync({
         display_name: formData.display_name,
-        age: parseInt(formData.age) || 0
+        age: parseInt(formData.age) || 0,
       });
 
-      await refetchUserProfile();
+      refetchUserProfile();
 
       setUserData(updatedProfile.data);
 
       message.success("Profile updated successfully!");
-
     } catch (error) {
       console.error("Update Failed:", error);
-      message.error(error.response?.data?.message || "Failed to update profile");
+      const errorMessage = error.response?.data?.message || "Failed to update profile";
+      message.error(errorMessage);
     }
   };
 
@@ -82,13 +83,13 @@ const EditProfile = () => {
           <p>Back to profile</p>
         </div>
       </Link>
-    
-      <div className="w-full h-8/12 flex justify-center ">
+
+      <div className="w-full h-8/12 flex justify-center">
         <div className="w-3xl h-full flex justify-center">
           <div className="w-4/12 h-full flex items-center">
             <span className="w-fit h-fit flex flex-col items-center gap-2">
               <img
-                src="https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png"
+                src={PLACEHOLDER_IMAGE}
                 alt="Place Holder"
                 className="h-46 w-46 rounded-full"
               />
@@ -100,7 +101,7 @@ const EditProfile = () => {
           <div className="w-8/12 h-full flex flex-col items-center justify-center gap-2">
             <div className="w-full flex items-center justify-between">
               <h4 className="text-5xl font-bold">Edit Profile</h4>
-              <button 
+              <button
                 type="button"
                 onClick={handleClearAll}
                 className="text-red-400 flex gap-2"
@@ -109,7 +110,7 @@ const EditProfile = () => {
                 Clear all
               </button>
             </div>
-            
+
             {isLoading ? (
               <div className="w-full flex justify-center items-center py-10">
                 <p className="text-gray-500">Loading profile...</p>
@@ -152,7 +153,7 @@ const EditProfile = () => {
                   >
                     Deactivate Account
                   </button>
-                  <button 
+                  <button
                     type="submit"
                     disabled={editProfileMutation.isPending}
                     className="w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
@@ -166,9 +167,9 @@ const EditProfile = () => {
         </div>
       </div>
 
-      <DeactivateAccountModal 
-        openModal={openDeactivateModal} 
-        onClose={() => setOpenDeactivateModal(false)} 
+      <DeactivateAccountModal
+        openModal={openDeactivateModal}
+        onClose={() => setOpenDeactivateModal(false)}
       />
     </div>
   );
