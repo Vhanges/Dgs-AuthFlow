@@ -42,23 +42,12 @@ export const useUpdateUserPhoto = () =>
   });
 
 
-// Hook for deactivating user account
+// Api Request for deactivating user account
 export const useDeactivateAccount = () =>
   useMutation({
-    mutationFn: async (token) => {
-      // const response = await axios.patch(
-      //   `${noVerAPI}/user/deactivate`,
-      //   {},
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
-
-      // return response.data;
-      return {}; // Return empty value for testing
+    mutationFn: async () => {
+      const response = await ApiService.versionedApi.patch('/user/deactivate');
+      return response.data;
     },
   });
 

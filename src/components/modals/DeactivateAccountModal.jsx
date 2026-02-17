@@ -12,20 +12,15 @@ export default function DeactivateAccountModal({openModal, onClose}) {
     const handleDeactivate = async () => {
         try {
             await deactivateMutation.mutateAsync();
-            
-            // Show success message
-            message.success({
-                content: 'Your account has been deactivated. You will be logged out shortly.',
-                duration: 3,
-            });
 
             // Wait 3 seconds before logging out
             setTimeout(async () => {
-                // Clear cookie on backend
-                try { await logoutApi(); } catch { /* ignore */ }
                 // Logout and clear all user data
                 logout();
-                
+                message.success({
+                    content: 'Your account has been deactivated. You will be logged out shortly.',
+                    duration: 3,
+                });
                 // Redirect to login page
                 navigate('/login');
             }, 3000);
