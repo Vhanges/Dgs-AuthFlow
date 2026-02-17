@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import profile from "../services/userProfileService";
-import { useAuthStore } from "../store/useAuth";
+import { useAuthStore } from "../store/useAuthStore";
 
 const useProfile = () => {
   const userData = useAuthStore((state) => state.userData);

@@ -4,11 +4,25 @@ import { persist } from "zustand/middleware";
 export const useAuthStore = create(
   persist(
     (set, get) => ({
-      userData: null,
+      userData: {
+        "account_id": 0,
+        "google_id": 0,
+        "gallery_id": 0,
+        "email": "",
+        "display_name": "",
+        "age": 0,
+        "is_active": 0,
+      },
       
-      // Login action - only store user data, cookie handles auth
-      login: (userData) => 
-        set({ userData }),
+
+      // Set user data action for update :>
+      setUserData: (newData) =>
+        set((state) => ({
+          userData: {
+            ...state.userData, // Keep existing fields
+            ...newData,        // Overwrite only the fields provided
+          },
+        })),
       
       // Logout action  
       logout: () => 

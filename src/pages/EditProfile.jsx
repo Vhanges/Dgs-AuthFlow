@@ -4,16 +4,19 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { message } from "antd";
 import AntButton from "../components/Button";
-import useProfile from "../hooks/useProfile";
-import { useEditUserProfile } from "../services/userProfileService";
-
+import { useEditUserProfile, useGetProfile } from "../services/userProfileService";
+import { useAuthStore } from "../store/useAuth";
 const EditProfile = () => {
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
+  const {userData: profile, setUserData }= useAuthStore()
+  const { data: updatedProfile, refetch: refetchUserProfile } = useGetProfile();
+
   const isInitialized = useRef(false);
-  
+  let isLoading = false;
+
   // Fetch profile data
-  const profileQuery = useProfile();
   const editProfileMutation = useEditUserProfile();
+  const getProfile = useGetProfile();
 
   // Form state
   const [formData, setFormData] = useState({
@@ -24,15 +27,15 @@ const EditProfile = () => {
 
   // Update form data when profile loads (only once)
   useEffect(() => {
-    if (profileQuery.data && !isInitialized.current) {
+    if (profile && !isInitialized.current) {
       setFormData({
-        display_name: profileQuery.data.display_name || "",
-        age: profileQuery.data.age || "",
-        email: profileQuery.data.email || ""
+        display_name: profile.display_name || "",
+        age: profile.age || "",
+        email: profile.email || ""
       });
       isInitialized.current = true;
     }
-  }, [profileQuery.data]);
+  }, [profile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,10 +62,12 @@ const EditProfile = () => {
         age: parseInt(formData.age) || 0
       });
 
+      await refetchUserProfile();
+
+      setUserData(updatedProfile.data);
+
       message.success("Profile updated successfully!");
-      
-      // Refetch profile data
-      profileQuery.refetch();
+
     } catch (error) {
       console.error("Update Failed:", error);
       message.error(error.response?.data?.message || "Failed to update profile");
@@ -105,7 +110,7 @@ const EditProfile = () => {
               </button>
             </div>
             
-            {profileQuery.isLoading ? (
+            {isLoading ? (
               <div className="w-full flex justify-center items-center py-10">
                 <p className="text-gray-500">Loading profile...</p>
               </div>

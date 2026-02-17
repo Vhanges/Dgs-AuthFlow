@@ -4,22 +4,25 @@ import { Link } from "react-router-dom";
 import UploadPhotoModal from "../modals/UploadPhotoModal";
 import { useGetProfile } from "../../services/userProfileService";
 import { useQuery } from "@tanstack/react-query";
+import { useAuthStore } from "../../store/useAuth";
 
 const Header = ({ headerOne, headerTwo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   let activeHeader;
 
+  const profile = useAuthStore((state) => state.userData)
 
-  const { data: profile, isLoading, isError } = useQuery({
-    queryFn: useGetProfile, 
-    queryKey: ['profile'],
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-    cacheTime: 0,
-    onSuccess: (data) => {
-      console.log("HELLO", data)
-    }
-  })
+
+  // const { data: profile, isLoading, isError } = useQuery({
+  //   queryFn: useGetProfile, 
+  //   queryKey: ['profile'],
+  //   refetchOnWindowFocus: false,
+  //   staleTime: 0,
+  //   cacheTime: 0,
+  //   onSuccess: (data) => {
+  //     console.log("HELLO", data)
+  //   }
+  // })
 
 
 

@@ -11,20 +11,25 @@ import { useAuthStore } from "../store/useAuth";
 
 const Login = () => {
   const loginApi = useLoginApi();
-  const { login } = useAuthStore();
+  const { setUserData } = useAuthStore();
   const navigate = useNavigate();
   
   
   const handleSubmit = (values) => {
     loginApi.mutate(values, {
-      onSuccess: ({ data }) => {
-
-        console.log("SUPER DATA", data )
+      onSuccess: ({ data: userData }) => {
         
+        setUserData({          
+          account_id: userData.account_id,
+          google_id: userData.google_id,
+          gallery_id: userData.gallery_id,
+          email: userData.email,
+          display_name: userData.display_name,
+          age: userData.age,
+          is_active: userData.is_active,
+        });
 
-        login(
-          data.user || data.userData || {},
-        );
+        
         navigate("/home");
       },
       onError: () => {},
