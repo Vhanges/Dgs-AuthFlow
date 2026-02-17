@@ -11,7 +11,9 @@ export const useAuthStore = create(
         "email": "",
         "display_name": "",
         "age": 0,
+        "avatar_url": "",
         "is_active": 0,
+        
       },
       
 

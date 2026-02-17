@@ -1,7 +1,7 @@
 import { Button, Form, Input } from "antd";
 import { useCallback } from "react";
 import { FaGoogle } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useRouteLoaderData } from "react-router-dom";
 import AntButton from "../components/Button";
 import Divider from "../components/Divider";
 import Header from "../components/Header";
@@ -19,15 +19,7 @@ const Login = () => {
     loginApi.mutate(values, {
       onSuccess: ({ data: userData }) => {
         
-        setUserData({          
-          account_id: userData.account_id,
-          google_id: userData.google_id,
-          gallery_id: userData.gallery_id,
-          email: userData.email,
-          display_name: userData.display_name,
-          age: userData.age,
-          is_active: userData.is_active,
-        });
+        setUserData(userData);
 
         
         navigate("/home");

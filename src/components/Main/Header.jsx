@@ -2,9 +2,9 @@ import { useState } from "react";
 import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 import UploadPhotoModal from "../modals/UploadPhotoModal";
-import { useGetProfile } from "../../services/userProfileService";
-import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/useAuth";
+const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+const PLACEHOLDER = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
 
 const Header = ({ headerOne, headerTwo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,27 +12,13 @@ const Header = ({ headerOne, headerTwo }) => {
 
   const profile = useAuthStore((state) => state.userData)
 
-
-  // const { data: profile, isLoading, isError } = useQuery({
-  //   queryFn: useGetProfile, 
-  //   queryKey: ['profile'],
-  //   refetchOnWindowFocus: false,
-  //   staleTime: 0,
-  //   cacheTime: 0,
-  //   onSuccess: (data) => {
-  //     console.log("HELLO", data)
-  //   }
-  // })
-
-
-
   if (headerOne) {
     activeHeader = (
       <>
         <header className="w-[95%] h-fit bg-secondary flex items-center justify-between px-15 py-5 rounded-b-xl shadow-2xl top-0 z-15 sticky">
           <div className="flex flex-row items-center justify-center gap-3">
             <img
-              src="https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png"
+              src={profile.avatar_url ? DOMAIN_URL + profile.avatar_url : PLACEHOLDER}
               alt="Place Holder"
               className="h-32 w-32 rounded-full"
             />

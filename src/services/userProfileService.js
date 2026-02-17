@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import ApiService from "./axiosConfig";
 
-// Hook for fetching user profile
+// Api Request for fetching user profile
 export const useGetProfile = () =>
   useQuery({
     queryKey: ["userProfile"], // Unique key for caching
@@ -11,7 +11,7 @@ export const useGetProfile = () =>
     },
   });
 
-// Hook for editing user profile
+// Api Request for editing user profile
 export const useEditUserProfile = () =>
   useMutation({
     mutationFn: async ({ display_name, age }) => {
@@ -22,6 +22,25 @@ export const useEditUserProfile = () =>
       return response;
     },
   });
+
+// Api Request for updating/uploading user profile photo
+export const useUpdateUserPhoto = () => 
+  useMutation({
+    mutationFn: async (file) => {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const response = await ApiService.versionedApi.post('/user/profile/avatar', formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        }
+      );
+
+      return response;
+    }
+  });
+
 
 // Hook for deactivating user account
 export const useDeactivateAccount = () =>
@@ -43,50 +62,3 @@ export const useDeactivateAccount = () =>
     },
   });
 
-// Default export for non-hook usage
-const profileService = {
-  getProfile: async (token) => {
-    // const response = await axios.get(`${api}/user/profile`, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // });
-
-    // return response.data.data;
-    return {}; // Return empty value for testing
-  },
-
-  editUserProfile: async (token, { display_name, age }) => {
-    // const response = await axios.patch(
-    //   `${api}/user/profile`,
-    //   { display_name, age },
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   }
-    // );
-
-    // return response.data;
-    return {}; // Return empty value for testing
-  },
-
-  useDeactivateAccount: async (token) => {
-    // const response = await axios.patch(
-    //   `${api}/user/profile`,
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   }
-    // );
-
-    // return response.data;
-    return {}; // Return empty value for testing
-  },
-};
-
-export default profileService;

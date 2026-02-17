@@ -4,17 +4,16 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { message } from "antd";
 import AntButton from "../components/Button";
-import { useEditUserProfile, useGetProfile } from "../services/userProfileService";
+import { useEditUserProfile, useGetProfile, useUpdateUserPhoto } from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
 const PLACEHOLDER_IMAGE = "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
+const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+
 
 const EditProfile = () => {
+
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
-  const { userData: profile, setUserData } = useAuthStore();
-  const { data: updatedProfile, refetch: refetchUserProfile, isLoading } = useGetProfile();
-
   const isInitialized = useRef(false);
-
   // Form state
   const [formData, setFormData] = useState({
     display_name: "",
@@ -23,7 +22,10 @@ const EditProfile = () => {
   });
 
   // Fetch profile data
+  const { userData: profile, setUserData } = useAuthStore();
+  const { data: updatedProfile, refetch: refetchUserProfile, isLoading } = useGetProfile();
   const editProfileMutation = useEditUserProfile();
+  const updateUserPhoto = useUpdateUserPhoto();
 
   // Update form data when profile loads (only once)
   useEffect(() => {
@@ -54,6 +56,24 @@ const EditProfile = () => {
     });
   };
 
+  const handleProfilePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    try {
+        await updateUserPhoto.mutateAsync(file);
+        await refetchUserProfile()
+        setUserData(updatedProfile.data);
+        message.success("Profile updated successfully!")
+
+    } catch (error) {
+      console.error("Updated Failed", error);
+      const errorMessage = error.response?.data?.message || "Updating profile failed";
+      message.error(errorMessage);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -64,6 +84,8 @@ const EditProfile = () => {
       });
 
       refetchUserProfile();
+
+      console.log(updatedProfile.data)
 
       setUserData(updatedProfile.data);
 
@@ -89,13 +111,21 @@ const EditProfile = () => {
           <div className="w-4/12 h-full flex items-center">
             <span className="w-fit h-fit flex flex-col items-center gap-2">
               <img
-                src={PLACEHOLDER_IMAGE}
-                alt="Place Holder"
+                src={profile?.avatar_url ? DOMAIN_URL + profile?.avatar_url : PLACEHOLDER_IMAGE} 
+                alt="Profile"
                 className="h-46 w-46 rounded-full"
               />
-              <AntButton className="w-fit text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px]">
+              <label
+                className="w-fit text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px] cursor-pointer text-center"
+              >
                 Upload new photo
-              </AntButton>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleProfilePhotoUpload}
+                />
+              </label>
             </span>
           </div>
           <div className="w-8/12 h-full flex flex-col items-center justify-center gap-2">
