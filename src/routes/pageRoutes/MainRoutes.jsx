@@ -10,23 +10,21 @@ import SetUpNewPassword from "../../pages/SetUpNewPassword";
 import Login from "../../pages/Login";
 
 const MainRoutes = () => {
-  const { accessToken, userData } = useAuthStore();
-  const isAuthenticated = accessToken && userData;
+  const { userData } = useAuthStore();
+  console.log(userData);
+  const isAuthenticated = userData;
 
   return (
     <Routes>
       {isAuthenticated ? (
         <>
-          {/* Authenticated routes */}
           <Route element={<Main headerType="header-one" />}>
             <Route path="/home" element={<Home />} />
           </Route>
-
           <Route element={<Main headerType="header-two" />}>
             <Route path="/edit-profile" element={<EditProfile />} />
           </Route>
 
-          {/* Redirect auth pages to home if already authenticated */}
           <Route path="/login" element={<Navigate to="/home" replace />} />
           <Route path="/signup" element={<Navigate to="/home" replace />} />
           <Route
@@ -38,7 +36,6 @@ const MainRoutes = () => {
         </>
       ) : (
         <>
-          {/* Unauthenticated routes */}
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
@@ -49,7 +46,6 @@ const MainRoutes = () => {
             />
           </Route>
 
-          {/* Redirect everything else to login if not authenticated */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </>

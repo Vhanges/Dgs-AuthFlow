@@ -1,88 +1,111 @@
 import { Link } from "react-router-dom";
-import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { GoArrowLeft } from "react-icons/go";
-import { Button, Modal } from "antd";
+import { Button, Modal, Form, Input } from "antd";
 import Header from "../components/Header";
-import FormInput from "../components/FormInput";
-import AntButton from "../components/Button";
-import { useSignUp } from "../hooks/useSignup";
+import { useSignUpApi } from "../services/useAuth";
+import { useState } from "react";
 
 const SignUp = () => {
-  const {
-    formData,
-    errorMessage,
-    isModalOpen,
-    isPending,
-    handleChange,
-    handleSubmit,
-    closeModal,
-  } = useSignUp();
+  const signUpApi = useSignUpApi();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = (values) => {
+    signUpApi.mutate(values, {
+      onSuccess: ({ data }) => {
+        console.log("Success", data);
+        setIsModalOpen(true);
+      },
+      onError: () => {},
+    });
+  };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
+    <div
+      className="flex flex-col gap-6 w-full max-w-md mx-auto px-8"
+      noValidate
+    >
+      <Header
+        title="Sign Up"
+        subtitle="Kindly fill up the needed information below"
+      />
+      <Form
+        onFinish={handleSubmit}
         className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
-        noValidate
+        layout="vertical"
+        disabled={signUpApi.isPending}
       >
-        <Header
-          title="Sign Up"
-          subtitle="Kindly fill up the needed information below"
-        />
-
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col w-full gap-3">
-            <FormInput
-              icon={MdOutlineMailOutline}
-              type="email"
+          <Form.Item className="flex! flex-col! gap-4!">
+            <Form.Item
               name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              disabled={isPending}
-              required
-            />
-
-            <FormInput
-              icon={MdLockOutline}
-              type="password"
+              rules={[
+                { required: true, message: "Please input your email" },
+                { type: "email" },
+              ]}
+            >
+              <Input
+                prefix={
+                  <MailOutlined
+                    color="#797979"
+                    className="text-[#797979]"
+                    style={{ color: "#797979" }}
+                  />
+                }
+                placeholder="Email"
+                className="mb-2.5!"
+              ></Input>
+            </Form.Item>
+            <Form.Item
               name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              disabled={isPending}
-              required
-            />
-
-            <FormInput
-              icon={MdLockOutline}
-              type="password"
+              rules={[
+                { required: true, message: "Please input your password" },
+              ]}
+            >
+              <Input.Password
+                prefix={
+                  <LockOutlined
+                    color="#797979"
+                    className="text-[#797979]"
+                    style={{ color: "#797979" }}
+                  />
+                }
+                placeholder="Password"
+                className="mb-2.5!"
+              ></Input.Password>
+            </Form.Item>
+            <Form.Item
               name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm Password"
-              disabled={isPending}
-              required
-            />
-          </div>
-
-          {errorMessage && (
-            <div className="w-full flex justify-end">
-              <p className="text-sm text-red-600" role="alert">
-                {errorMessage}
-              </p>
-            </div>
-          )}
+              rules={[{ required: true, message: "This field is requiredd" }]}
+            >
+              <Input.Password
+                prefix={
+                  <LockOutlined
+                    color="#797979"
+                    className="text-[#797979]"
+                    style={{ color: "#797979" }}
+                  />
+                }
+                placeholder="Confirm Password"
+                className="mb-2.5!"
+              ></Input.Password>
+            </Form.Item>
+          </Form.Item>
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
           <Button
             onClick={handleSubmit}
             type="primary"
-            disabled={isPending}
+            htmlType="submit"
+            loading={signUpApi.isPending}
             size="large"
           >
-            {isPending ? "Signing up..." : "Sign Up"}
+            {useSignUpApi.isPending ? "Signing up..." : "Sign Up"}
           </Button>
 
           <Link
@@ -93,7 +116,7 @@ const SignUp = () => {
             <span>Back to Login</span>
           </Link>
         </div>
-      </form>
+      </Form>
 
       <Modal
         title="Account Successfully Created"
@@ -119,7 +142,7 @@ const SignUp = () => {
           </Link>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 

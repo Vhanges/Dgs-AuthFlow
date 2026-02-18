@@ -11,8 +11,7 @@ const useProfile = () => {
 
   return useQuery({
     queryKey: ["profile"],
-    queryFn: () => profile.getProfile(accessToken),
-    enabled: !!accessToken,
+    queryFn: () => profile.getProfile(),
     refetchOnWindowFocus: false,
   });
 };

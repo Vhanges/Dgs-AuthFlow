@@ -1,27 +1,54 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { MdLockOutline } from "react-icons/md";
-import { Modal } from "antd";
+import { Modal, Form, Button, Input } from "antd";
 import Header from "../components/Header";
-import FormInput from "../components/FormInput";
-import AntButton from "../components/Button";
-import { useResetPassword } from "../hooks/useResetPassword";
+import { useState } from "react";
+import { App } from "antd";
+import { useResetPasswordApi } from "../services/useAuth";
 
 const SetUpNewPassword = () => {
-  const {
-    formData,
-    isModalOpen,
-    isPending,
-    handleChange,
-    handleSubmit,
-    closeModal,
-  } = useResetPassword();
+  const resetPasswordApi = useResetPasswordApi();
+  const [searchParams] = useSearchParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { notification } = App.useApp();
+
+  const token = searchParams.get("token");
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = (values) => {
+    if (!token) {
+      notification.warning({
+        message: "Invalid Reset Link",
+        description:
+          "This reset link is invalid. Please request a new password reset.",
+        placement: "topRight",
+      });
+      return;
+    }
+
+    resetPasswordApi.mutate(
+      {
+        token,
+        newPassword: values.password,
+      },
+      {
+        onSuccess: () => {
+          setIsModalOpen(true);
+        },
+        onError: () => {},
+      },
+    );
+  };
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
+      <Form
+        onFinish={handleSubmit}
         className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
-        noValidate
+        disabled={resetPasswordApi.isPending}
+        layout="vertical"
       >
         <Header
           title="Set up a New Password"
@@ -30,36 +57,40 @@ const SetUpNewPassword = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex flex-col w-full gap-3">
-            <FormInput
-              icon={MdLockOutline}
-              type="password"
+            <Form.Item
               name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              disabled={isPending}
-              required
-            />
-
-            <FormInput
-              icon={MdLockOutline}
-              type="password"
+              rules={[{ required: true, message: "Please input your email" }]}
+            >
+              <Input.Password
+                prefix={<MdLockOutline />}
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item
               name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm Password"
-              disabled={isPending}
-              required
-            />
+              rules={[{ required: true, message: "This field is required" }]}
+            >
+              <Input.Password
+                prefix={<MdLockOutline />}
+                placeholder="Confirm Password"
+              />
+            </Form.Item>
           </div>
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
-          <AntButton type="submit" disabled={isPending} variant="primary">
-            {isPending ? "Resetting..." : "Confirm"}
-          </AntButton>
+          <Button
+            type="primary"
+            block
+            htmlType="submit"
+            size="large"
+            loading={resetPasswordApi.isPending}
+            variant="primary"
+          >
+            {resetPasswordApi.isPending ? "Resetting..." : "Confirm"}
+          </Button>
         </div>
-      </form>
+      </Form>
 
       <Modal
         title="Password Reset Successfully"
@@ -81,7 +112,9 @@ const SetUpNewPassword = () => {
             to="/login"
             onClick={closeModal}
           >
-            <AntButton variant="primary">Okay</AntButton>
+            <Button type="primary" size="large">
+              Okay
+            </Button>
           </Link>
         </div>
       </Modal>

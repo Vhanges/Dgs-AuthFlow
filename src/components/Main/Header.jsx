@@ -2,14 +2,15 @@ import { useState } from "react";
 import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 import UploadPhotoModal from "../modals/UploadPhotoModal";
+import { useAuthStore } from "../../store/useAuth";
 import useProfile from "../../hooks/useProfile";
 
 const Header = ({ headerOne, headerTwo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   let activeHeader;
 
-  const profile = useProfile();
-
+  const userData = useAuthStore((state) => state.userData);
+  useProfile();
 
   if (headerOne) {
     activeHeader = (
@@ -22,14 +23,20 @@ const Header = ({ headerOne, headerTwo }) => {
               className="h-32 w-32 rounded-full"
             />
             <span className="block ">
-              <h5 className="text-3xl text-white font-bold">{profile.data?.display_name ? '@' + profile.data.display_name  : "Super Unconfigured User"}</h5>
-              <p>{profile.data?.age ?? ""} * {profile.data?.email ?? ""}</p>
+              <h5 className="text-3xl text-white font-bold">
+                {userData?.display_name
+                  ? "@" + userData.display_name
+                  : "Super Unconfigured User"}
+              </h5>
+              <p>
+                {userData?.age ?? ""} * {userData?.email ?? ""}
+              </p>
             </span>
           </div>
           <div className="flex flex-col gap-3">
-            <Link to="/edit-profile">
+            <Link to="/edit-userData">
               <button className="w-50 text-white border-3 border-white py-2 font-bold text-xl rounded-[10px]">
-                Edit Profile
+                Edit
               </button>
             </Link>
             <button

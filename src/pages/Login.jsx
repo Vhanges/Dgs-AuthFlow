@@ -1,37 +1,41 @@
 import { Button, Form, Input } from "antd";
-import { useCallback } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { App } from "antd";
 import AntButton from "../components/Button";
 import Divider from "../components/Divider";
 import Header from "../components/Header";
-import { googleLogin, useLoginApi } from "../services/auth";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useAuthStore } from "../store/useAuth";
+import { googleLogin, useLoginApi } from "../services/useAuth";
 
 const Login = () => {
   const loginApi = useLoginApi();
   const { login } = useAuthStore();
   const navigate = useNavigate();
+  const { notification } = App.useApp();
 
   const handleSubmit = (values) => {
     loginApi.mutate(values, {
       onSuccess: ({ data }) => {
-        login(
-          data.accessToken,
-          data.refreshToken,
-          data.user || data.userData || {},
-        );
+        login(data.userData);
         navigate("/home");
       },
-      onError: () => {},
+      onError: () => {
+        if (values.password != values.userData) {
+          notification.warning({
+            message: "Wrong credentials",
+            description: "The email and password is incorrect.",
+            placement: "topRight",
+          });
+        }
+      },
     });
   };
 
-  const handleGoogleLogin = useCallback((e) => {
-    e.preventDefault();
+  const handleGoogleLogin = () => {
     googleLogin();
-  }, []);
+  };
 
   return (
     <div
@@ -42,7 +46,7 @@ const Login = () => {
       <Form
         onFinish={handleSubmit}
         initialValues={{
-          email: "vovok85181@homuno.com",
+          email: "famin64069@manupay.com",
           password: "password1234",
         }}
         layout="vertical"
@@ -55,23 +59,16 @@ const Login = () => {
               <Form.Item
                 name="email"
                 rules={[
-                  { required: true, message: "Please input your username!" },
+                  { required: true, message: "Please input your email" },
                   {
                     type: "email",
                   },
                 ]}
-                className="mb-10px!"
               >
                 <Input
-                  prefix={
-                    <MailOutlined
-                      color="#797979"
-                      className="text-[#797979]"
-                      style={{ color: "#797979" }}
-                    />
-                  }
+                  prefix={<MailOutlined style={{ color: "#797979" }} />}
                   placeholder="Email"
-                  className="mb-[10px]!"
+                  className="mb-2.5!"
                 />
               </Form.Item>
 
@@ -113,7 +110,7 @@ const Login = () => {
             block
             className="max-w-full"
           >
-            Login
+            {loginApi.isPending ? "Login" : "Logging In"}
           </Button>
           <Divider />
           <AntButton
