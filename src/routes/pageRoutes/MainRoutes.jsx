@@ -8,9 +8,11 @@ import SignUp from "../../pages/SignUp";
 import ForgotPassword from "../../pages/ForgotPassword";
 import SetUpNewPassword from "../../pages/SetUpNewPassword";
 import Login from "../../pages/Login";
+import GoogleRedirect from "../../pages/GoogleRedirect";
 
 const MainRoutes = () => {
   const userData = useAuthStore((state) => state.userData);
+  3;
   const isAuthenticated = !!userData;
 
   return (
@@ -36,6 +38,7 @@ const MainRoutes = () => {
       ) : (
         <>
           <Route element={<AuthLayout />}>
+            <Route path="/google-redirect" element={<GoogleRedirect />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

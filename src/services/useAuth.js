@@ -22,6 +22,19 @@ export const googleLogin = () => {
   window.location.href = `${api}/auth/google`;
 };
 
+export const useLogout = () => {
+  return useMutation({
+    mutationFn: async () => {
+      try {
+        const { data } = await axiosInstance.post("/auth/logout", {});
+        return data;
+      } catch (error) {
+        throw new Error(error.response?.data?.message);
+      }
+    },
+  });
+};
+
 export const useSignUpApi = () =>
   useMutation({
     mutationFn: async (userData) => {

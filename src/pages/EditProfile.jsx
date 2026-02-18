@@ -4,14 +4,17 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { message } from "antd";
 import AntButton from "../components/Button";
-import { useEditUserProfile, useGetProfile, useUpdateUserPhoto } from "../services/userProfileService";
+import {
+  useEditUserProfile,
+  useGetProfile,
+  useUpdateUserPhoto,
+} from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
-const PLACEHOLDER_IMAGE = "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
+const PLACEHOLDER_IMAGE =
+  "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
 const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 
-
 const EditProfile = () => {
-
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
   const isInitialized = useRef(false);
   // Form state
@@ -23,7 +26,7 @@ const EditProfile = () => {
 
   // Fetch profile data
   const { userData: profile, setUserData } = useAuthStore();
-  const { data: updatedProfile, refetch: refetchUserProfile, isLoading } = useGetProfile();
+  const { isLoading } = useGetProfile();
   const editProfileMutation = useEditUserProfile();
   const updateUserPhoto = useUpdateUserPhoto();
 
@@ -34,7 +37,7 @@ const EditProfile = () => {
         setFormData({
           display_name: profile.display_name || "",
           age: profile.age || "",
-          email: profile.email || ""
+          email: profile.email || "",
         });
       }, 0);
       isInitialized.current = true;
@@ -59,40 +62,47 @@ const EditProfile = () => {
   const handleProfilePhotoUpload = async (e) => {
     const file = e.target.files[0];
 
-    if(!file) return;
+    if (!file) return;
 
     try {
-        await updateUserPhoto.mutateAsync(file);
-        await refetchUserProfile()
-        setUserData(updatedProfile.data);
-        message.success("Profile updated successfully!")
+      await updateUserPhoto.mutateAsync(file, {
+        onSuccess: async (data) => {
+          console.log("hello1", data);
+          setUserData(data.data);
+        },
+      });
 
+      message.success("Profile updated successfully!");
     } catch (error) {
       console.error("Updated Failed", error);
-      const errorMessage = error.response?.data?.message || "Updating profile failed";
+      const errorMessage =
+        error.response?.data?.message || "Updating profile failed";
       message.error(errorMessage);
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await editProfileMutation.mutateAsync({
-        display_name: formData.display_name,
-        age: parseInt(formData.age) || 0,
-      });
-
-      refetchUserProfile();
-
-      console.log(updatedProfile.data)
-
-      setUserData(updatedProfile.data);
+      await editProfileMutation.mutateAsync(
+        {
+          display_name: formData.display_name,
+          age: parseInt(formData.age) || 0,
+        },
+        {
+          onSuccess: (data) => {
+            setUserData(data.data);
+            console.log(data.data);
+          },
+        },
+      );
 
       message.success("Profile updated successfully!");
     } catch (error) {
       console.error("Update Failed:", error);
-      const errorMessage = error.response?.data?.message || "Failed to update profile";
+      const errorMessage =
+        error.response?.data?.message || "Failed to update profile";
       message.error(errorMessage);
     }
   };
@@ -111,13 +121,15 @@ const EditProfile = () => {
           <div className="w-4/12 h-full flex items-center">
             <span className="w-fit h-fit flex flex-col items-center gap-2">
               <img
-                src={profile?.avatar_url ? DOMAIN_URL + profile?.avatar_url : PLACEHOLDER_IMAGE} 
+                src={
+                  profile?.avatar_url
+                    ? DOMAIN_URL + profile?.avatar_url
+                    : PLACEHOLDER_IMAGE
+                }
                 alt="Profile"
                 className="h-46 w-46 rounded-full"
               />
-              <label
-                className="w-fit text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px] cursor-pointer text-center"
-              >
+              <label className="w-fit text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px] cursor-pointer text-center">
                 Upload new photo
                 <input
                   type="file"
@@ -146,7 +158,10 @@ const EditProfile = () => {
                 <p className="text-gray-500">Loading profile...</p>
               </div>
             ) : (
-              <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
+              <form
+                className="w-full flex flex-col gap-4"
+                onSubmit={handleSubmit}
+              >
                 <input
                   type="text"
                   name="display_name"
@@ -188,7 +203,9 @@ const EditProfile = () => {
                     disabled={editProfileMutation.isPending}
                     className="w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
                   >
-                    {editProfileMutation.isPending ? "Updating..." : "Update Account"}
+                    {editProfileMutation.isPending
+                      ? "Updating..."
+                      : "Update Account"}
                   </button>
                 </span>
               </form>

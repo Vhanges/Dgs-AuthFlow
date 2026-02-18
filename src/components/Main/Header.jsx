@@ -1,16 +1,31 @@
 import { useState } from "react";
 import Logo from "../../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UploadPhotoModal from "../modals/UploadPhotoModal";
 import { useAuthStore } from "../../store/useAuth";
+import { useLogout } from "../../services/useAuth";
 const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 const PLACEHOLDER = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
 
 const Header = ({ headerOne, headerTwo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   let activeHeader;
+  const navigate = useNavigate();
 
   const profile = useAuthStore((state) => state.userData);
+  const logoutMutation = useLogout();
+  const clearAuth = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    // 1️⃣ Clear local auth immediately
+    clearAuth();
+
+    // 2️⃣ Navigate instantly
+    navigate("/login", { replace: true });
+
+    // 3️⃣ Fire logout request in background
+    logoutMutation.mutate();
+  };
 
   if (headerOne) {
     activeHeader = (
@@ -48,6 +63,12 @@ const Header = ({ headerOne, headerTwo }) => {
               className="w-50 text-secondary bg-white py-2 font-bold text-xl rounded-[10px]"
             >
               Add Photo
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-50 text-secondary bg-white py-2 font-bold text-xl rounded-[10px]"
+            >
+              Logout
             </button>
           </div>
         </header>

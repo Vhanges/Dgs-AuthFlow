@@ -1,23 +1,30 @@
 import { Modal, Form, Upload, message, Button } from "antd";
-import { DownloadOutlined, UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  UploadOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { useUploadGalleryPhotos } from "../../services/galleryService";
+import { useQueryClient } from "@tanstack/react-query";
 
-
-const UploadPhotoModal = ({ isOpen, onClose}) => {
+const UploadPhotoModal = ({ isOpen, onClose }) => {
   const [form] = Form.useForm();
   const uploadMutation = useUploadGalleryPhotos();
-  
+  const client = useQueryClient();
+
   // We use this merely to trigger re-renders for the preview
   const fileList = Form.useWatch("photos", form);
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      const filesToUpload = values.photos.map(file => file.originFileObj);
+      const filesToUpload = values.photos.map((file) => file.originFileObj);
 
-      await uploadMutation.mutate({
-        photos: filesToUpload
+      await uploadMutation.mutateAsync({
+        photos: filesToUpload,
       });
+
+      client.invalidateQueries({ queryKey: ["get-all-photos"] });
 
       message.success("Photos uploaded successfully!");
       form.resetFields();
@@ -42,9 +49,9 @@ const UploadPhotoModal = ({ isOpen, onClose}) => {
         <Button key="cancel" onClick={onClose} className="mr-2">
           Cancel
         </Button>,
-        <Button 
-          key="submit" 
-          type="primary" 
+        <Button
+          key="submit"
+          type="primary"
           onClick={handleSubmit}
           onCancel={onClose}
           loading={uploadMutation.isPending}
@@ -56,24 +63,32 @@ const UploadPhotoModal = ({ isOpen, onClose}) => {
     >
       <Form form={form} layout="vertical">
         {/* Visual Header Box */}
-        <div style={{
-          background: "linear-gradient(135deg, #fffbe6 0%, #fff9e6 100%)",
-          padding: "24px",
-          borderRadius: "12px",
-          border: "2px solid #ffd666",
-          marginBottom: "24px"
-        }}>
+        <div
+          style={{
+            background: "linear-gradient(135deg, #fffbe6 0%, #fff9e6 100%)",
+            padding: "24px",
+            borderRadius: "12px",
+            border: "2px solid #ffd666",
+            marginBottom: "24px",
+          }}
+        >
           <div className="flex items-center gap-3 mb-3">
-             <UploadOutlined style={{ fontSize: "20px", color: "#d48806" }} />
-             <h3 className="text-[#1c3c6d] font-bold text-lg m-0">Gallery Photos</h3>
+            <UploadOutlined style={{ fontSize: "20px", color: "#d48806" }} />
+            <h3 className="text-[#1c3c6d] font-bold text-lg m-0">
+              Gallery Photos
+            </h3>
           </div>
-          <p className="text-gray-500 text-sm">Upload your photos to the gallery (multiple images allowed).</p>
+          <p className="text-gray-500 text-sm">
+            Upload your photos to the gallery (multiple images allowed).
+          </p>
 
           <Form.Item
             name="photos"
             valuePropName="fileList"
             getValueFromEvent={normFile}
-            rules={[{ required: true, message: "Please upload at least one photo" }]}
+            rules={[
+              { required: true, message: "Please upload at least one photo" },
+            ]}
           >
             <Upload.Dragger
               accept="image/*"
@@ -104,9 +119,12 @@ const UploadPhotoModal = ({ isOpen, onClose}) => {
                     ))}
                   </div>
                   <div className="text-green-600 font-medium text-center">
-                     ✓ {fileList.length} photo{fileList.length > 1 ? 's' : ''} ready to upload
+                    ✓ {fileList.length} photo{fileList.length > 1 ? "s" : ""}{" "}
+                    ready to upload
                   </div>
-                  <p className="text-gray-500 text-sm text-center">Click or drag more files to add</p>
+                  <p className="text-gray-500 text-sm text-center">
+                    Click or drag more files to add
+                  </p>
                 </div>
               ) : (
                 // Empty State
@@ -114,8 +132,12 @@ const UploadPhotoModal = ({ isOpen, onClose}) => {
                   <p className="ant-upload-drag-icon">
                     <UploadOutlined />
                   </p>
-                  <p className="ant-upload-text">Click or drag files to upload</p>
-                  <p className="ant-upload-hint">Support for multiple image uploads</p>
+                  <p className="ant-upload-text">
+                    Click or drag files to upload
+                  </p>
+                  <p className="ant-upload-hint">
+                    Support for multiple image uploads
+                  </p>
                 </>
               )}
             </Upload.Dragger>

@@ -2,40 +2,17 @@ import { Button, Form, Input, App } from "antd";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
-
 import AntButton from "../components/Button";
 import Divider from "../components/Divider";
 import Header from "../components/Header";
-
 import { useAuthStore } from "../store/useAuth";
 import { googleLogin, useLoginApi } from "../services/useAuth";
-import { useGetProfile } from "../services/userProfileService";
 
 const Login = () => {
   const loginApi = useLoginApi();
   const { setUserData } = useAuthStore();
   const navigate = useNavigate();
   const { notification } = App.useApp();
-
-  // const { data, isSuccess } = useGetProfile({
-  //   retry: false,
-  //   refetchOnWindowFocus: false,
-  // });
-
-  // setUserData(
-  //   {
-  //     account_id: 12412412,
-  //     google_id: 15123123,
-  //     gallery_id: 405124123,
-  //     email: "kennethsanpedro1108@gmail.com",
-  //     display_name: "Kennesu",
-  //     age: 30,
-  //     avatar_url: "",
-  //     is_active: 0,
-  //   },
-  //   // avigate("/home"),
-  // );
 
   const handleSubmit = (values) => {
     loginApi.mutate(values, {
@@ -64,6 +41,10 @@ const Login = () => {
       <Form
         onFinish={handleSubmit}
         layout="vertical"
+        initialValues={{
+          email: "dalib15976@iaciu.com",
+          password: "password123456",
+        }}
         disabled={loginApi.isPending}
         className="flex flex-col gap-6"
       >
