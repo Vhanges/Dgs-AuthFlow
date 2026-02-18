@@ -1,6 +1,8 @@
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
+import { Modal, Form, Input, Button } from "antd";
 import { Button, Input, Modal, Form } from "antd";
 import Header from "../components/Header";
 import AntButton from "../components/Button";
@@ -28,13 +30,15 @@ const ForgotPassword = () => {
     <>
       <Form
         onFinish={handleSubmit}
+      <Form
+        onFinish={handleSubmit}
         className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
         layout="vertical"
         disabled={forgotPasswordApi.isPending}
       >
         <Header
           title="Forgot Password"
-          subtitle="The instructions will be sent on the email you provide."
+          subtitle="The instructions will be sent to the email you provide."
         />
 
         <div className="flex flex-col gap-3">

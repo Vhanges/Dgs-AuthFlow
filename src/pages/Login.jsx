@@ -1,7 +1,6 @@
 import { Button, Form, Input } from "antd";
 import { FaGoogle } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { App } from "antd";
+import { Link, useNavigate, useRouteLoaderData } from "react-router-dom";
 import AntButton from "../components/Button";
 import Divider from "../components/Divider";
 import Header from "../components/Header";
@@ -11,14 +10,14 @@ import { googleLogin, useLoginApi } from "../services/useAuth";
 
 const Login = () => {
   const loginApi = useLoginApi();
-  const { login } = useAuthStore();
+  const { setUserData } = useAuthStore();
   const navigate = useNavigate();
-  const { notification } = App.useApp();
 
   const handleSubmit = (values) => {
     loginApi.mutate(values, {
-      onSuccess: ({ data }) => {
-        login(data.userData);
+      onSuccess: ({ data: userData }) => {
+        setUserData(userData);
+
         navigate("/home");
       },
       onError: () => {

@@ -11,8 +11,7 @@ import Login from "../../pages/Login";
 
 const MainRoutes = () => {
   const { userData } = useAuthStore();
-  console.log(userData);
-  const isAuthenticated = userData;
+  const isAuthenticated = !!userData;
 
   return (
     <Routes>

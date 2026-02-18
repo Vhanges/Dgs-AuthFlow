@@ -1,27 +1,37 @@
 import { useMemo } from "react";
-import useGallery from "../hooks/useGallery";
+import { useGetAllGalleryPhotos } from "../services/galleryService";
 
 const Home = () => {
-    const domain_url = import.meta.env.VITE_API_DOMAIN_BASE_URL;
-    const gallery = useGallery();
+    const domain_url = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+    const { data: gallery, isLoading, isError, isSuccess } = useGetAllGalleryPhotos();
     const test = true;
 
-    // Log gallery response for debugging
-    if (gallery.isSuccess) {
-        console.log("🖼️ GALLERY SUCCESS - API Response:", JSON.stringify(gallery.data, null, 2));
+    if(isLoading){
+        console.log("The gallery photos are being loaded");
+    }
+
+    if (isSuccess) {
+        console.log("🖼️ GALLERY SUCCESS - API Response:", JSON.stringify(gallery, null, 2));
     }
     
-    if (gallery.error) {
+    if (isError) {
         console.log("❌ GALLERY ERROR:", gallery.error);
     }
 
+
+    
     // Use real gallery data or fallback to empty array
     const galleryImages = useMemo(() => {
-        return (gallery.data || []).map(item => ({
+        // Handle different possible response structures
+        const photos = Array.isArray(gallery) 
+            ? gallery 
+            : gallery?.photos || gallery?.data || [];
+            
+        return photos.map(item => ({
             ...item,
             src: `${import.meta.env.VITE_API_BASE_URL}${item.url}`
         }));
-    }, [gallery.data]);
+    }, [gallery]);
 
     return (
         <div
@@ -34,7 +44,7 @@ const Home = () => {
                     Gallery
                 </h4>
             </div>
-            {gallery.isLoading ? (
+            {isLoading ? (
                 <div className="flex flex-wrap gap-4 justify-start p-10">
                     <div className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"></div>
                     <div className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"></div>

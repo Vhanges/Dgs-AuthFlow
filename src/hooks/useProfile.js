@@ -1,17 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import profile from "../services/profile";
-import { useAuthStore } from "../store/useAuth";
+import profile from "../services/userProfileService";
+import { useAuthStore } from "../store/useAuthStore";
 
 const useProfile = () => {
-  const accessToken = useAuthStore((state) => state.accessToken);
-
-  // const {login} = useAuthStore();
-
-  // return login();
+  const userData = useAuthStore((state) => state.userData);
 
   return useQuery({
     queryKey: ["profile"],
     queryFn: () => profile.getProfile(),
+    enabled: !!userData,
     refetchOnWindowFocus: false,
   });
 };
