@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
 import { Modal, Form, Input, Button } from "antd";
-import { Button, Input, Modal, Form } from "antd";
+6;
 import Header from "../components/Header";
 import AntButton from "../components/Button";
 import { useForgotPasswordApi } from "../services/useAuth";
-import { useState } from "react";
+65;
 
 const ForgotPassword = () => {
   const forgotPasswordApi = useForgotPasswordApi();
@@ -28,8 +28,6 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Form
-        onFinish={handleSubmit}
       <Form
         onFinish={handleSubmit}
         className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"

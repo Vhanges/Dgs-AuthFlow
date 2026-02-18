@@ -38,7 +38,7 @@ const Header = ({ headerOne, headerTwo }) => {
             </span>
           </div>
           <div className="flex flex-col gap-3">
-            <Link to="/edit-userData">
+            <Link to="/edit-profile">
               <button className="w-50 text-white border-3 border-white py-2 font-bold text-xl rounded-[10px]">
                 Edit
               </button>

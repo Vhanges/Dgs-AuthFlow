@@ -10,7 +10,7 @@ import SetUpNewPassword from "../../pages/SetUpNewPassword";
 import Login from "../../pages/Login";
 
 const MainRoutes = () => {
-  const { userData } = useAuthStore();
+  const userData = useAuthStore((state) => state.userData);
   const isAuthenticated = !!userData;
 
   return (
