@@ -10,11 +10,13 @@ import {
   useUpdateUserPhoto,
 } from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
+import DeleteAccountModal from "../components/modals/DeleteAccountModal";
 const PLACEHOLDER_IMAGE =
   "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
 const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 
 const EditProfile = () => {
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
   const isInitialized = useRef(false);
   // Form state
@@ -208,6 +210,15 @@ const EditProfile = () => {
                       : "Update Account"}
                   </button>
                 </span>
+                <button
+                    type="button"
+                    onClick={() => {
+                      setOpenDeleteModal(true);
+                    }}
+                    className="w-6/12 text-red-400 px-2 text-md font-bold rounded-[10px]"
+                  >
+                    Delete Account
+                  </button>
               </form>
             )}
           </div>
@@ -217,6 +228,11 @@ const EditProfile = () => {
       <DeactivateAccountModal
         openModal={openDeactivateModal}
         onClose={() => setOpenDeactivateModal(false)}
+      />
+
+      <DeleteAccountModal
+        openModal={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
       />
     </div>
   );
