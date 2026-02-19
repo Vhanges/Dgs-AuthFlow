@@ -24,6 +24,11 @@ export const useAuthStore = create(
           },
         })),
 
+      // Deletion verification token (in-memory only, not persisted)
+      deletionToken: null,
+      setDeletionToken: (token) => set({ deletionToken: token }),
+      clearDeletionToken: () => set({ deletionToken: null }),
+
       // Logout action
       logout: () => set({ userData: null }),
 
@@ -37,6 +42,7 @@ export const useAuthStore = create(
       name: "auth-storage",
       partialize: (state) => ({
         userData: state.userData,
+        // deletionToken intentionally excluded from persistence
       }),
     },
   ),

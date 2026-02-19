@@ -10,14 +10,19 @@ import {
   useUpdateUserPhoto,
 } from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
-import DeleteAccountModal from "../components/modals/DeleteAccountModal";
+import DeletionImpactInfo from "../components/modals/DeleteAccount/DeletionImpactInfo";
+import DeletionAuthVerify from "../components/modals/DeleteAccount/DeletionAuthVerify";
+import DeletionFinalConfirmation from "../components/modals/DeleteAccount/DeletionFinalConfirmation";
 const PLACEHOLDER_IMAGE =
   "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
 const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 
 const EditProfile = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openAuthVerifyModal, setOpenAuthVerifyModal] = useState(false);
+  const [openFinalConfirmModal, setOpenFinalConfirmModal] = useState(false);
   const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
+  const [isGoogleDeletion, setIsGoogleDeletion] = useState(false);
   const isInitialized = useRef(false);
   // Form state
   const [formData, setFormData] = useState({
@@ -107,6 +112,11 @@ const EditProfile = () => {
         error.response?.data?.message || "Failed to update profile";
       message.error(errorMessage);
     }
+  };
+
+  const handleGoogleDeletion = () => {
+    setIsGoogleDeletion(true);
+    setOpenFinalConfirmModal(true);
   };
 
   return (
@@ -230,10 +240,41 @@ const EditProfile = () => {
         onClose={() => setOpenDeactivateModal(false)}
       />
 
-      <DeleteAccountModal
-        openModal={openDeleteModal}
-        onClose={() => setOpenDeleteModal(false)}
-      />
+      {openDeleteModal && (
+        <DeletionImpactInfo
+          openModal={openDeleteModal}
+          onClose={() => setOpenDeleteModal(false)}
+          onProceed={() => {
+            if (!profile?.google_id) {
+              setOpenAuthVerifyModal(true);
+            } else {
+              handleGoogleDeletion();
+            }
+          }}
+        />
+      )}
+
+      {openAuthVerifyModal && (
+        <DeletionAuthVerify
+          openModal={openAuthVerifyModal}
+          onClose={() => setOpenAuthVerifyModal(false)}
+          onVerified={() => {
+            setOpenAuthVerifyModal(false);
+            setOpenFinalConfirmModal(true);
+          }}
+        />
+      )}
+
+      {openFinalConfirmModal && (
+        <DeletionFinalConfirmation
+          openModal={openFinalConfirmModal}
+          onClose={() => {
+            setOpenFinalConfirmModal(false);
+            setIsGoogleDeletion(false);
+          }}
+          isGoogleAccount={isGoogleDeletion}
+        />
+      )}
     </div>
   );
 };
