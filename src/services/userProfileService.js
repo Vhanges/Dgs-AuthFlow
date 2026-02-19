@@ -44,21 +44,41 @@ export const useUpdateUserPhoto = () =>
     },
   });
 
-// Api Request for deactivating user account
-export const useDeactivateAccount = () =>
+export const useVerifyPasswordForDeletion = () =>
   useMutation({
-    mutationFn: async () => {
-      const response = await ApiService.versionedApi.patch("/user/deactivate");
-      return response.data;
+    mutationFn: async (password) => {
+      const response = await ApiService.versionedApi.post(
+        "/user/deletion/verify",
+        { password }
+      );
+      return response;
     },
   });
 
+export const useDeactivateAccount = () =>
+  useMutation({
+    mutationFn: async (verificationToken) => {
+      const response = await ApiService.versionedApi.patch("/user/deactivate", {
+        verificationToken,
+      });
+      return response;
+    },
+  });
 
-  // Api Request for deactivating user account
 export const useDeleteAccount = () =>
   useMutation({
     mutationFn: async () => {
       const response = await ApiService.versionedApi.delete("/user");
       return response.data;
+    },
+  });
+
+export const useGoogleDeleteAccount = () =>
+  useMutation({
+    mutationFn: async () => {
+      const response = await ApiService.versionedApi.post(
+        "/user/google/deactivate"
+      );
+      return response;
     },
   });
