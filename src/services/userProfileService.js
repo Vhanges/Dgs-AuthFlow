@@ -52,3 +52,13 @@ export const useDeactivateAccount = () =>
       return response.data;
     },
   });
+
+
+  // Api Request for deactivating user account
+export const useDeleteAccount = () =>
+  useMutation({
+    mutationFn: async () => {
+      const response = await ApiService.versionedApi.delete("/user");
+      return response.data;
+    },
+  });
