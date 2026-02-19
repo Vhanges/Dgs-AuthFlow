@@ -1,10 +1,10 @@
+import { Button, Modal } from "antd";
 import { Link } from "react-router-dom";
-import { Modal, Button } from "antd";
 
-const PasswordResetModal = ({ isOpen, onClose }) => {
+const SignUpModal = ({ isOpen, onClose }) => {
   return (
     <Modal
-      title="Password Reset Successfully"
+      title="Account Successfully Created"
       open={isOpen}
       footer={null}
       closable={false}
@@ -17,13 +17,13 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
       }}
     >
       <div className="flex flex-col gap-4">
-        <p>You can now login with your new password.</p>
+        <p>Check your email to verify your account.</p>
         <Link
           className="w-full flex justify-center items-center"
           to="/login"
           onClick={onClose}
         >
-          <Button size="large" htmlType="submit" type="primary" block>
+          <Button type="primary" htmlType="submit" size="large" block>
             Okay
           </Button>
         </Link>
@@ -32,4 +32,4 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default PasswordResetModal;
+export default SignUpModal;

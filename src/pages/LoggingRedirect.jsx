@@ -3,7 +3,7 @@ import { useGetProfile } from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
 import { useNavigate } from "react-router-dom"; // ✅ useNavigate, not Navigate
 
-const GoogleRedirect = () => {
+const LoggingRedirect = () => {
   const navigate = useNavigate();
   const { setUserData } = useAuthStore();
 
@@ -20,7 +20,7 @@ const GoogleRedirect = () => {
     }
   }, [data, isSuccess, setUserData, navigate]);
 
-  return <div>Google Redirect</div>;
+  return <div>Logging Redirect</div>;
 };
 
-export default GoogleRedirect;
+export default LoggingRedirect;

@@ -1,10 +1,19 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useGetAllGalleryPhotos } from "../services/galleryService";
+import { useAuthStore } from "../store/useAuth";
+import { Button } from "antd";
+
+import { Link } from "react-router-dom";
+import UploadPhotoModal from "../components/modals/UploadPhotoModal";
+const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+const placeHolder = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
 
 const Home = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const domain_url = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
-  const { data: gallery, isLoading } = useGetAllGalleryPhotos();
+  const { data: gallery } = useGetAllGalleryPhotos();
   const test = true;
+  const profile = useAuthStore((state) => state.userData);
 
   const galleryImages = useMemo(() => {
     const photos = Array.isArray(gallery)
@@ -19,42 +28,59 @@ const Home = () => {
 
   return (
     <div
-      className={`w-full h-[80vh] flex flex-col ${
+      className={`overflow-y-auto w-full flex flex-col mb-30 ${
         test ? "items-start justify-start" : "items-center justify-center"
-      } rounded-xl border border-gray-300 shadow-2xl overflow-y-auto`}
+      }  border`}
     >
-      <div className="w-full sticky top-0 z-10 p-5 bg-white border-b border-gray-200">
-        <h4 className="text-primary text-2xl font-bold">Gallery</h4>
-      </div>
-      {isLoading ? (
-        <div className="flex flex-wrap gap-4 justify-start p-10">
-          <div className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"></div>
-          <div className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"></div>
+      <div className="flex justify-start pl-25 items-center w-full gap-4">
+        <img
+          src={
+            profile.avatar_url ? domainUrl + profile.avatar_url : placeHolder
+          }
+          alt="Place Holder"
+          className="h-22 w-22 rounded-full"
+        />
+        <div className="flex flex-col gap-4">
+          <h4 className="text-black text-4xl font-bold">
+            {profile.display_name}
+          </h4>
+          <div className="w-full flex gap-2">
+            <Button block>
+              <Link to="/setting/edit-profile">Edit Profile</Link>
+            </Button>
+            <Button type="primary" block onClick={() => setIsModalOpen(true)}>
+              Upload Photo
+            </Button>
+          </div>
         </div>
-      ) : galleryImages.length > 0 ? (
-        <div className="flex flex-wrap gap-4 justify-start p-10">
-          {galleryImages.map((item) => (
-            <div
-              key={item.photo_id}
-              className="w-40 h-60 bg-gray-200 rounded-lg overflow-hidden"
-            >
-              <img
-                src={domain_url + item.url}
-                alt={`photo-${item.photo_id}`}
-                className="w-full h-full"
-                style={{ objectFit: "cover" }}
-              />
-            </div>
-          ))}
+      </div>
+      {galleryImages.length > 0 ? (
+        <div className="px-25 w-full">
+          <div className="grid grid-cols-3 w-full mt-10 gap-9.5 py-10 border-t border-gray-200">
+            {galleryImages.map((item) => (
+              <div
+                key={item.photo_id}
+                className="h-60 rounded-lg overflow-hidden"
+              >
+                <img
+                  src={domain_url + item.url}
+                  alt={`photo-${item.photo_id}`}
+                  className="w-full h-full"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
-        <span className="flex flex-col gap-3 items-center flex-1 justify-center w-full">
-          <h5 className="text-primary font-bold text-6xl">No Photos Yet</h5>
-          <p className="text-primary font-bold text-2xl">
-            Your work will be posted here.
-          </p>
-        </span>
+        <div className="flex flex-col gap-3 items-center justify-center h-screen px-25 w-full">
+          <div className="flex flex-col gap-3 items-center justify-center h-screen px-10 w-full border-t mt-10  border-black"></div>
+        </div>
       )}
+      <UploadPhotoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

@@ -11,28 +11,27 @@ import {
 } from "../services/userProfileService";
 import { useAuthStore } from "../store/useAuth";
 import DeleteAccountModal from "../components/modals/DeleteAccountModal";
+import Header from "../components/Header";
 const PLACEHOLDER_IMAGE =
   "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
 const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 
 const EditProfile = () => {
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
   const isInitialized = useRef(false);
-  // Form state
   const [formData, setFormData] = useState({
     display_name: "",
     age: "",
     email: "",
   });
 
-  // Fetch profile data
+  const [ageFocused, setAgeFocused] = useState(false);
+  const [userNameFocused, setUserNameFocused] = useState(false);
+
   const { userData: profile, setUserData } = useAuthStore();
   const { isLoading } = useGetProfile();
   const editProfileMutation = useEditUserProfile();
   const updateUserPhoto = useUpdateUserPhoto();
 
-  // Update form data when profile loads (only once)
   useEffect(() => {
     if (profile && !isInitialized.current) {
       setTimeout(() => {
@@ -52,13 +51,6 @@ const EditProfile = () => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleClearAll = () => {
-    setFormData({
-      display_name: "",
-      age: "",
-    });
   };
 
   const handleProfilePhotoUpload = async (e) => {
@@ -110,51 +102,34 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="text-primary w-full h-screen flex flex-col items-start py-10">
-      <Link to={"/home"}>
-        <div className="w-full flex flex-row gap-2">
-          <ArrowLeftOutlined />
-          <p>Back to profile</p>
-        </div>
-      </Link>
-
-      <div className="w-full h-8/12 flex justify-center">
-        <div className="w-3xl h-full flex justify-center">
-          <div className="w-4/12 h-full flex items-center">
-            <span className="w-fit h-fit flex flex-col items-center gap-2">
-              <img
-                src={
-                  profile?.avatar_url
-                    ? DOMAIN_URL + profile?.avatar_url
-                    : PLACEHOLDER_IMAGE
-                }
-                alt="Profile"
-                className="h-46 w-46 rounded-full"
+    <div className="text-primary w-full h-full flex flex-col items-start pt-10 ">
+      <div className="w-full flex justify-center">
+        <div className="w-full flex flex-col justify-center gap-6">
+          <Header
+            title="Edit Profile"
+            subtitle="Manage your personal information."
+          />
+          <div className="w-full flex items-center gap-4">
+            <img
+              src={
+                profile?.avatar_url
+                  ? DOMAIN_URL + profile?.avatar_url
+                  : PLACEHOLDER_IMAGE
+              }
+              alt="Profile"
+              className="h-28 w-28 rounded-full"
+            />
+            <label className="w-fit cursor-pointer text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px] text-center">
+              Upload new photo
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleProfilePhotoUpload}
               />
-              <label className="w-fit text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px] cursor-pointer text-center">
-                Upload new photo
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleProfilePhotoUpload}
-                />
-              </label>
-            </span>
+            </label>
           </div>
-          <div className="w-8/12 h-full flex flex-col items-center justify-center gap-2">
-            <div className="w-full flex items-center justify-between">
-              <h4 className="text-5xl font-bold">Edit Profile</h4>
-              <button
-                type="button"
-                onClick={handleClearAll}
-                className="text-red-400 flex gap-2"
-              >
-                <DeleteOutlined />
-                Clear all
-              </button>
-            </div>
-
+          <div className="w-8/12 flex flex-col items-center justify-center gap-2">
             {isLoading ? (
               <div className="w-full flex justify-center items-center py-10">
                 <p className="text-gray-500">Loading profile...</p>
@@ -164,76 +139,80 @@ const EditProfile = () => {
                 className="w-full flex flex-col gap-4"
                 onSubmit={handleSubmit}
               >
-                <input
-                  type="text"
-                  name="display_name"
-                  value={formData.display_name}
-                  onChange={handleInputChange}
-                  placeholder="Enter Username (e.g @superjames)"
-                  className="w-full bg-gray-200 py-2 px-2 rounded-sm"
-                />
-                <input
-                  type="number"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleInputChange}
-                  placeholder="Enter Age (e.g 21)"
-                  className="w-full bg-gray-200 py-2 px-2 rounded-sm"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter Email Address (e.g jamesmith@gmail.com)"
-                  className="w-full bg-gray-200 py-2 px-2 rounded-sm"
-                  disabled
-                  title="Email cannot be changed"
-                />
-                <span className="w-full flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpenDeactivateModal(true);
-                    }}
-                    className="w-6/12 text-red-400 border-2 border-red-400 py-2 px-2 text-md font-bold rounded-[10px]"
+                <div className="relative w-full">
+                  <label
+                    className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                      userNameFocused || formData.display_name
+                        ? "-top-2.5 text-xs  bg-white px-1"
+                        : "top-1/2 -translate-y-1/2 text-md"
+                    }`}
                   >
-                    Deactivate Account
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={editProfileMutation.isPending}
-                    className="w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    name="display_name"
+                    onFocus={() => setUserNameFocused(true)}
+                    onBlur={() => setUserNameFocused(false)}
+                    value={formData.display_name}
+                    onChange={handleInputChange}
+                    className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
+                  />
+                </div>
+                <div className="relative w-full">
+                  <label
+                    className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                      ageFocused || formData.age
+                        ? "-top-2.5 text-xs  bg-white px-1"
+                        : "top-1/2 -translate-y-1/2 text-md"
+                    }`}
                   >
-                    {editProfileMutation.isPending
-                      ? "Updating..."
-                      : "Update Account"}
-                  </button>
-                </span>
+                    Age
+                  </label>
+                  <input
+                    type="number"
+                    name="age"
+                    onFocus={() => setAgeFocused(true)}
+                    onBlur={() => setAgeFocused(false)}
+                    value={formData.age}
+                    onChange={handleInputChange}
+                    className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
+                  />
+                </div>
+                <div className="relative w-full">
+                  <label
+                    className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                      formData.email
+                        ? "-top-2.5 text-xs  bg-white px-1"
+                        : "top-1/2 -translate-y-1/2 text-md"
+                    }`}
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
+                    disabled
+                    title="Email cannot be changed"
+                  />
+                </div>
                 <button
-                    type="button"
-                    onClick={() => {
-                      setOpenDeleteModal(true);
-                    }}
-                    className="w-6/12 text-red-400 px-2 text-md font-bold rounded-[10px]"
-                  >
-                    Delete Account
-                  </button>
+                  type="submit"
+                  disabled={editProfileMutation.isPending}
+                  className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                >
+                  {editProfileMutation.isPending
+                    ? "Updating..."
+                    : "Update Account"}
+                </button>
               </form>
             )}
           </div>
         </div>
       </div>
-
-      <DeactivateAccountModal
-        openModal={openDeactivateModal}
-        onClose={() => setOpenDeactivateModal(false)}
-      />
-
-      <DeleteAccountModal
-        openModal={openDeleteModal}
-        onClose={() => setOpenDeleteModal(false)}
-      />
     </div>
   );
 };

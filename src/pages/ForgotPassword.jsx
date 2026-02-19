@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
-import { Modal, Form, Input, Button } from "antd";
-6;
+import { Form, Input, Button } from "antd";
+import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
 import Header from "../components/Header";
-import AntButton from "../components/Button";
 import { useForgotPasswordApi } from "../services/useAuth";
-65;
 
 const ForgotPassword = () => {
   const forgotPasswordApi = useForgotPasswordApi();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -51,11 +52,23 @@ const ForgotPassword = () => {
                 { type: "email" },
               ]}
             >
-              <Input
-                prefix={<MdOutlineMailOutline style={{ color: "#797979" }} />}
-                placeholder="Email"
-                className="mb-2.5!"
-              />
+              <div className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    emailFocused || emailValue
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Email
+                </label>
+                <Input
+                  onFocus={() => setEmailFocused(true)}
+                  onBlur={() => setEmailFocused(false)}
+                  onChange={(e) => setEmailValue(e.target.value)}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white! "
+                />
+              </div>
             </Form.Item>
           </Form.Item>
         </div>
@@ -76,6 +89,7 @@ const ForgotPassword = () => {
 
           <Link
             to="/login"
+            disabled={forgotPasswordApi.isPending}
             className="flex justify-center items-center gap-1 text-sm text-black hover:underline mt-2"
           >
             <GoArrowLeft />
@@ -84,30 +98,7 @@ const ForgotPassword = () => {
         </div>
       </Form>
 
-      <Modal
-        title="Password Reset Email Sent"
-        open={isModalOpen}
-        footer={null}
-        closable={false}
-        className="w-90! top-50!"
-        styles={{
-          header: {
-            fontSize: "20px",
-            fontWeight: "bold",
-          },
-        }}
-      >
-        <div className="flex flex-col gap-4">
-          <p>A reset link has been sent to your email.</p>
-          <Link
-            className="w-full flex justify-center items-center"
-            to="/login"
-            onClick={closeModal}
-          >
-            <AntButton variant="primary">Okay</AntButton>
-          </Link>
-        </div>
-      </Modal>
+      <ForgotPasswordModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };

@@ -5,10 +5,17 @@ import { Button, Modal, Form, Input } from "antd";
 import Header from "../components/Header";
 import { useSignUpApi } from "../services/useAuth";
 import { useState } from "react";
+import SignUpModal from "../components/modals/SignUpModal";
 
 const SignUp = () => {
   const signUpApi = useSignUpApi();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
+  const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState("");
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -40,7 +47,7 @@ const SignUp = () => {
         disabled={signUpApi.isPending}
       >
         <div className="flex flex-col gap-3">
-          <Form.Item className="flex! flex-col! gap-4!">
+          <div className="flex flex-col gap-3">
             <Form.Item
               name="email"
               rules={[
@@ -48,17 +55,23 @@ const SignUp = () => {
                 { type: "email" },
               ]}
             >
-              <Input
-                prefix={
-                  <MailOutlined
-                    color="#797979"
-                    className="text-[#797979]"
-                    style={{ color: "#797979" }}
-                  />
-                }
-                placeholder="Email"
-                className="mb-2.5!"
-              ></Input>
+              <div className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    emailFocused || emailValue
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Email
+                </label>
+                <Input
+                  onFocus={() => setEmailFocused(true)}
+                  onBlur={() => setEmailFocused(false)}
+                  onChange={(e) => setEmailValue(e.target.value)}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white!"
+                />
+              </div>
             </Form.Item>
             <Form.Item
               name="password"
@@ -66,35 +79,47 @@ const SignUp = () => {
                 { required: true, message: "Please input your password" },
               ]}
             >
-              <Input.Password
-                prefix={
-                  <LockOutlined
-                    color="#797979"
-                    className="text-[#797979]"
-                    style={{ color: "#797979" }}
-                  />
-                }
-                placeholder="Password"
-                className="mb-2.5!"
-              ></Input.Password>
+              <div className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    passwordFocused || passwordValue
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Password
+                </label>
+                <Input.Password
+                  onFocus={() => setPasswordFocused(true)}
+                  onBlur={() => setPasswordFocused(false)}
+                  onChange={(e) => setPasswordValue(e.target.value)}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white!"
+                />
+              </div>
             </Form.Item>
             <Form.Item
               name="confirmPassword"
-              rules={[{ required: true, message: "This field is requiredd" }]}
+              rules={[{ required: true, message: "This field is required" }]}
             >
-              <Input.Password
-                prefix={
-                  <LockOutlined
-                    color="#797979"
-                    className="text-[#797979]"
-                    style={{ color: "#797979" }}
-                  />
-                }
-                placeholder="Confirm Password"
-                className="mb-2.5!"
-              ></Input.Password>
+              <div className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    confirmPasswordFocused || confirmPasswordValue
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Confirm Password
+                </label>
+                <Input.Password
+                  onFocus={() => setConfirmPasswordFocused(true)}
+                  onBlur={() => setConfirmPasswordFocused(false)}
+                  onChange={(e) => setConfirmPasswordValue(e.target.value)}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white!"
+                />
+              </div>
             </Form.Item>
-          </Form.Item>
+          </div>
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
@@ -110,6 +135,7 @@ const SignUp = () => {
 
           <Link
             to="/login"
+            disabled={signUpApi.isPending}
             className="flex justify-center items-center gap-1 text-sm text-black hover:underline mt-2"
           >
             <GoArrowLeft />
@@ -118,30 +144,7 @@ const SignUp = () => {
         </div>
       </Form>
 
-      <Modal
-        title="Account Successfully Created"
-        open={isModalOpen}
-        footer={null}
-        closable={false}
-        className="w-90! top-50!"
-        styles={{
-          header: {
-            fontSize: "20px",
-            fontWeight: "bold",
-          },
-        }}
-      >
-        <div className="flex flex-col gap-4">
-          <p>Check your email to verify your account.</p>
-          <Link
-            className="w-full flex justify-center items-center"
-            to="/login"
-            onClick={closeModal}
-          >
-            <button variant="primary">Okay</button>
-          </Link>
-        </div>
-      </Modal>
+      <SignUpModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };

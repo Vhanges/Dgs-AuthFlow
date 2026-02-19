@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Modal, Button } from "antd";
 
-const PasswordResetModal = ({ isOpen, onClose }) => {
+const ForgotPasswordModal = ({ isOpen, onClose }) => {
   return (
     <Modal
-      title="Password Reset Successfully"
+      title="Password Reset Email Sent"
       open={isOpen}
       footer={null}
       closable={false}
@@ -17,7 +17,7 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
       }}
     >
       <div className="flex flex-col gap-4">
-        <p>You can now login with your new password.</p>
+        <p>A reset link has been sent to your email.</p>
         <Link
           className="w-full flex justify-center items-center"
           to="/login"
@@ -32,4 +32,4 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default PasswordResetModal;
+export default ForgotPasswordModal;

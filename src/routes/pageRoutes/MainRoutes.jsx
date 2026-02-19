@@ -8,7 +8,9 @@ import SignUp from "../../pages/SignUp";
 import ForgotPassword from "../../pages/ForgotPassword";
 import SetUpNewPassword from "../../pages/SetUpNewPassword";
 import Login from "../../pages/Login";
-import GoogleRedirect from "../../pages/GoogleRedirect";
+import LoggingRedirect from "../../pages/LoggingRedirect";
+import SettingsLayout from "../../layout/SettingsLayout";
+import AccountOption from "../../pages/AccountOption";
 
 const MainRoutes = () => {
   const userData = useAuthStore((state) => state.userData);
@@ -19,11 +21,18 @@ const MainRoutes = () => {
     <Routes>
       {isAuthenticated ? (
         <>
-          <Route element={<Main headerType="header-one" />}>
+          <Route element={<Main />}>
             <Route path="/home" element={<Home />} />
-          </Route>
-          <Route element={<Main headerType="header-two" />}>
-            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route element={<SettingsLayout />}>
+              <Route
+                path="/setting/edit-profile"
+                element={<EditProfile />}
+              ></Route>
+              <Route
+                path="/setting/account-option"
+                element={<AccountOption />}
+              ></Route>
+            </Route>
           </Route>
 
           <Route path="/login" element={<Navigate to="/home" replace />} />
@@ -38,7 +47,7 @@ const MainRoutes = () => {
       ) : (
         <>
           <Route element={<AuthLayout />}>
-            <Route path="/google-redirect" element={<GoogleRedirect />} />
+            <Route path="/logging-redirect" element={<LoggingRedirect />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

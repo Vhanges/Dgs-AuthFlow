@@ -1,15 +1,33 @@
-import { useState } from "react";
-import Logo from "../../assets/logo.png";
-import { Link, useNavigate } from "react-router-dom";
-import UploadPhotoModal from "../modals/UploadPhotoModal";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuth";
 import { useLogout } from "../../services/useAuth";
-const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
-const PLACEHOLDER = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
+import iconLogo from "../../assets/iconLogo.png";
+import {
+  DownOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Dropdown, Space } from "antd";
+const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+const placeHolder = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
+const items = [
+  {
+    key: "1",
+    label: "Settings",
+    icon: <SettingOutlined />,
+  },
+  {
+    type: "divider",
+  },
+  {
+    key: "2",
+    label: "Logout",
+    icon: <LogoutOutlined />,
+  },
+];
 
-const Header = ({ headerOne, headerTwo }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  let activeHeader;
+const Header = () => {
   const navigate = useNavigate();
 
   const profile = useAuthStore((state) => state.userData);
@@ -17,81 +35,40 @@ const Header = ({ headerOne, headerTwo }) => {
   const clearAuth = useAuthStore((state) => state.logout);
 
   const handleLogout = () => {
-    // 1️⃣ Clear local auth immediately
     clearAuth();
 
-    // 2️⃣ Navigate instantly
     navigate("/login", { replace: true });
 
-    // 3️⃣ Fire logout request in background
     logoutMutation.mutate();
   };
 
-  if (headerOne) {
-    activeHeader = (
-      <>
-        <header className="w-[95%] h-fit bg-secondary flex items-center justify-between px-15 py-5 rounded-b-xl shadow-2xl top-0 z-15 sticky">
-          <div className="flex flex-row items-center justify-center gap-3">
+  const handleMenuClick = ({ key }) => {
+    if (key === "1") navigate("/setting/edit-profile");
+    if (key === "2") handleLogout();
+  };
+  return (
+    <header className="w-full h-fit bg-white/40 backdrop-blur flex items-center justify-between px-6 py-3 top-0 z-15 sticky">
+      <div className="flex flex-row items-center justify-center gap-3">
+        <img src={iconLogo} alt="Place Holder" className="h-13 w-13" />
+      </div>
+      <div className="flex flex-col gap-3">
+        <Dropdown menu={{ items, onClick: handleMenuClick }}>
+          <Space>
             <img
               src={
                 profile.avatar_url
-                  ? DOMAIN_URL + profile.avatar_url
-                  : PLACEHOLDER
+                  ? domainUrl + profile.avatar_url
+                  : placeHolder
               }
               alt="Place Holder"
-              className="h-32 w-32 rounded-full"
+              className="h-12 w-12 rounded-full"
             />
-            <span className="block ">
-              <h5 className="text-3xl text-white font-bold">
-                {profile?.display_name
-                  ? "@" + profile.display_name
-                  : "Super Unconfigured User"}
-              </h5>
-              <p>
-                {profile?.age ?? ""} * {profile?.email ?? ""}
-              </p>
-            </span>
-          </div>
-          <div className="flex flex-col gap-3">
-            <Link to="/edit-profile">
-              <button className="w-50 text-white border-3 border-white py-2 font-bold text-xl rounded-[10px]">
-                Edit
-              </button>
-            </Link>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-50 text-secondary bg-white py-2 font-bold text-xl rounded-[10px]"
-            >
-              Add Photo
-            </button>
-            <button
-              onClick={handleLogout}
-              className="w-50 text-secondary bg-white py-2 font-bold text-xl rounded-[10px]"
-            >
-              Logout
-            </button>
-          </div>
-        </header>
-
-        <UploadPhotoModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
-      </>
-    );
-  } else if (headerTwo) {
-    activeHeader = (
-      <header className="w-full bg-gradient-header flex items-center justify-center p-5 top-0 z-10 sticky">
-        <img
-          src={Logo}
-          alt="Global Tech Assessment and Training Center Inc."
-          className=" h-12 "
-        />
-      </header>
-    );
-  }
-
-  return <>{activeHeader}</>;
+            <DownOutlined />
+          </Space>
+        </Dropdown>
+      </div>
+    </header>
+  );
 };
 
 export default Header;

@@ -13,7 +13,7 @@
 
 body {
   color: black;
-  background-color: #f9f9fb;
+  background-color: white;
   overflow-y: hidden;
   font-family: var(--font-poppins);
 }

@@ -1,10 +1,10 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { MdLockOutline } from "react-icons/md";
-import { Modal, Form, Button, Input } from "antd";
+import { useSearchParams } from "react-router-dom";
+import { Form, Button, Input } from "antd";
 import Header from "../components/Header";
 import { useState } from "react";
 import { App } from "antd";
 import { useResetPasswordApi } from "../services/useAuth";
+import PasswordResetModal from "../components/modals/PasswordResetModal";
 
 const SetUpNewPassword = () => {
   const resetPasswordApi = useResetPasswordApi();
@@ -12,10 +12,13 @@ const SetUpNewPassword = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { notification } = App.useApp();
 
+  const [newPasswordFocused, setNewPasswordFocused] = useState(false);
+  const [newPasswordValue, setNewPasswordValue] = useState("");
+  const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState("");
+
   const token = searchParams.get("token");
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const closeModal = () => setIsModalOpen(false);
 
   const handleSubmit = (values) => {
     if (!token) {
@@ -29,14 +32,9 @@ const SetUpNewPassword = () => {
     }
 
     resetPasswordApi.mutate(
+      { token, newPassword: values.password },
       {
-        token,
-        newPassword: values.password,
-      },
-      {
-        onSuccess: () => {
-          setIsModalOpen(true);
-        },
+        onSuccess: () => setIsModalOpen(true),
         onError: () => {},
       },
     );
@@ -59,21 +57,50 @@ const SetUpNewPassword = () => {
           <div className="flex flex-col w-full gap-3">
             <Form.Item
               name="password"
-              rules={[{ required: true, message: "Please input your email" }]}
+              rules={[
+                { required: true, message: "Please input your password" },
+              ]}
             >
-              <Input.Password
-                prefix={<MdLockOutline />}
-                placeholder="Password"
-              />
+              <div className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all text-gray-400 duration-200 pointer-events-none z-10 ${
+                    newPasswordFocused || newPasswordValue
+                      ? "-top-2.5 text-xs bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  New Password
+                </label>
+                <Input.Password
+                  onFocus={() => setNewPasswordFocused(true)}
+                  onBlur={() => setNewPasswordFocused(false)}
+                  onChange={(e) => setNewPasswordValue(e.target.value)}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white!"
+                />
+              </div>
             </Form.Item>
+
             <Form.Item
               name="confirmPassword"
               rules={[{ required: true, message: "This field is required" }]}
             >
-              <Input.Password
-                prefix={<MdLockOutline />}
-                placeholder="Confirm Password"
-              />
+              <div className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all text-gray-400 duration-200 pointer-events-none z-10 ${
+                    confirmPasswordFocused || confirmPasswordValue
+                      ? "-top-2.5 text-xs bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Confirm Password
+                </label>
+                <Input.Password
+                  onFocus={() => setConfirmPasswordFocused(true)}
+                  onBlur={() => setConfirmPasswordFocused(false)}
+                  onChange={(e) => setConfirmPasswordValue(e.target.value)}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white!"
+                />
+              </div>
             </Form.Item>
           </div>
         </div>
@@ -85,39 +112,13 @@ const SetUpNewPassword = () => {
             htmlType="submit"
             size="large"
             loading={resetPasswordApi.isPending}
-            variant="primary"
           >
             {resetPasswordApi.isPending ? "Resetting..." : "Confirm"}
           </Button>
         </div>
       </Form>
 
-      <Modal
-        title="Password Reset Successfully"
-        open={isModalOpen}
-        footer={null}
-        closable={false}
-        className="w-90! top-50!"
-        styles={{
-          header: {
-            fontSize: "20px",
-            fontWeight: "bold",
-          },
-        }}
-      >
-        <div className="flex flex-col gap-4">
-          <p>You can now login with your new password.</p>
-          <Link
-            className="w-full flex justify-center items-center"
-            to="/login"
-            onClick={closeModal}
-          >
-            <Button type="primary" size="large">
-              Okay
-            </Button>
-          </Link>
-        </div>
-      </Modal>
+      <PasswordResetModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };
