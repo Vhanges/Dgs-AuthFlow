@@ -1,27 +1,40 @@
-import { useState, useEffect, useRef } from "react";
-import { Button, Form, message } from "antd";
-import {
-  useEditUserProfile,
-  useGetProfile,
-} from "../../services/userProfileService";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Button, Form, Input, message } from "antd";
+import { useEditUserProfile } from "../../services/userProfileService";
 import { useAuthStore } from "../../store/useAuth";
+import { pdf } from "@react-pdf/renderer";
+import ProfilePDF from "./ProfilePDF";
 import Header from "../../components/Header";
 import Avatar from "../../components/Avatar";
+import { useGetAllGalleryPhotos } from "../../services/galleryService";
 
 const EditProfile = () => {
   const isInitialized = useRef(false);
-  const [formData, setFormData] = useState({
-    display_name: "",
-    age: "",
-    email: "",
-  });
 
   const [ageFocused, setAgeFocused] = useState(false);
   const [userNameFocused, setUserNameFocused] = useState(false);
 
   const { userData: profile, setUserData } = useAuthStore();
-  const { isLoading } = useGetProfile();
   const editProfileMutation = useEditUserProfile();
+
+  const [formData, setFormData] = useState({
+    display_name: "",
+    age: "",
+    email: `${profile.email}`,
+  });
+
+  const { data: gallery } = useGetAllGalleryPhotos();
+
+  const galleryImages = useMemo(() => {
+    const photos = Array.isArray(gallery)
+      ? gallery
+      : gallery?.photos || gallery?.data || [];
+
+    return photos.map((item) => ({
+      ...item,
+      src: `${import.meta.env.VITE_API_BASE_URL}${item.url}`,
+    }));
+  }, [gallery]);
 
   useEffect(() => {
     if (profile && !isInitialized.current) {
@@ -36,6 +49,15 @@ const EditProfile = () => {
     }
   }, [profile]);
 
+  const handlePreview = async () => {
+    const blob = await pdf(
+      <ProfilePDF profile={profile} galleryImages={galleryImages} />,
+    ).toBlob();
+
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -44,30 +66,29 @@ const EditProfile = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await editProfileMutation.mutateAsync(
-        {
-          display_name: formData.display_name,
-          age: parseInt(formData.age) || 0,
+  const handleSubmit = async () => {
+    editProfileMutation.mutate(
+      {
+        display_name: formData.display_name,
+        age: parseInt(formData.age) || 0,
+      },
+      {
+        onSuccess: ({ data }) => {
+          setUserData(data);
+          setFormData({
+            display_name: data.display_name || "",
+            age: data.age || "",
+          });
+          message.success("Profile updated successfully!");
         },
-        {
-          onSuccess: (data) => {
-            setUserData(data.data);
-            console.log(data.data);
-          },
+        onError: (error) => {
+          console.error("Update Failed:", error);
+          const errorMessage =
+            error.response?.data?.message || "Failed to update profile";
+          message.error(errorMessage);
         },
-      );
-
-      message.success("Profile updated successfully!");
-    } catch (error) {
-      console.error("Update Failed:", error);
-      const errorMessage =
-        error.response?.data?.message || "Failed to update profile";
-      message.error(errorMessage);
-    }
+      },
+    );
   };
 
   return (
@@ -81,93 +102,87 @@ const EditProfile = () => {
           <Avatar />
 
           <div className="w-8/12 flex flex-col items-center justify-center gap-2">
-            {isLoading ? (
-              <div className="w-full flex justify-center items-center py-10">
-                <p className="text-gray-500">Loading profile...</p>
+            <Form
+              className="w-full flex flex-col gap-4"
+              onFinish={handleSubmit}
+              layout="vertical"
+            >
+              <Form.Item name="display_name" className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    userNameFocused || formData.display_name
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Username
+                </label>
+                <Input
+                  name="display_name"
+                  value={formData.display_name}
+                  onFocus={() => setUserNameFocused(true)}
+                  onBlur={() => setUserNameFocused(false)}
+                  onChange={handleInputChange}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
+                />
+              </Form.Item>
+              <Form.Item name="age" className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    ageFocused || formData.age
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Age
+                </label>
+                <Input
+                  name="age"
+                  value={formData.age}
+                  onFocus={() => setAgeFocused(true)}
+                  onBlur={() => setAgeFocused(false)}
+                  onChange={handleInputChange}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
+                />
+              </Form.Item>
+              <Form.Item name="email" className="relative w-full">
+                <label
+                  className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
+                    profile.email
+                      ? "-top-2.5 text-xs  bg-white px-1"
+                      : "top-1/2 -translate-y-1/2 text-md"
+                  }`}
+                >
+                  Email
+                </label>
+                <Input
+                  name="email"
+                  value={profile.email}
+                  onChange={handleInputChange}
+                  className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
+                  title="Email cannot be changed"
+                  disabled
+                />
+              </Form.Item>
+              <div className="flex gap-4">
+                <Button
+                  htmlType="submit"
+                  type="primary"
+                  disabled={editProfileMutation.isPending}
+                  className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                >
+                  {editProfileMutation.isPending
+                    ? "Updating..."
+                    : "Update Account"}
+                </Button>
+                <Button
+                  onClick={handlePreview}
+                  className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                >
+                  Preview Account
+                </Button>
               </div>
-            ) : (
-              <Form
-                className="w-full flex flex-col gap-4"
-                onFinish={handleSubmit}
-                layout="vertical"
-              >
-                <div className="relative w-full">
-                  <label
-                    className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
-                      userNameFocused || formData.display_name
-                        ? "-top-2.5 text-xs  bg-white px-1"
-                        : "top-1/2 -translate-y-1/2 text-md"
-                    }`}
-                  >
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    name="display_name"
-                    onFocus={() => setUserNameFocused(true)}
-                    onBlur={() => setUserNameFocused(false)}
-                    value={formData.display_name}
-                    onChange={handleInputChange}
-                    className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
-                  />
-                </div>
-                <div className="relative w-full">
-                  <label
-                    className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
-                      ageFocused || formData.age
-                        ? "-top-2.5 text-xs  bg-white px-1"
-                        : "top-1/2 -translate-y-1/2 text-md"
-                    }`}
-                  >
-                    Age
-                  </label>
-                  <input
-                    type="number"
-                    name="age"
-                    onFocus={() => setAgeFocused(true)}
-                    onBlur={() => setAgeFocused(false)}
-                    value={formData.age}
-                    onChange={handleInputChange}
-                    className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
-                  />
-                </div>
-                <div className="relative w-full">
-                  <label
-                    className={`absolute left-3 transition-all  text-gray-400 duration-200 pointer-events-none z-10 ${
-                      formData.email
-                        ? "-top-2.5 text-xs  bg-white px-1"
-                        : "top-1/2 -translate-y-1/2 text-md"
-                    }`}
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="border! border-black! focus:outline-none! outline-none! bg-white! w-full p-2"
-                    disabled
-                    title="Email cannot be changed"
-                  />
-                </div>
-                <div className="flex gap-4">
-                  <Button
-                    htmlType="submit"
-                    type="primary"
-                    disabled={editProfileMutation.isPending}
-                    className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
-                  >
-                    {editProfileMutation.isPending
-                      ? "Updating..."
-                      : "Update Account"}
-                  </Button>
-                  <Button className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50">
-                    Preview Account
-                  </Button>
-                </div>
-              </Form>
-            )}
+            </Form>
           </div>
         </div>
       </div>
