@@ -18,7 +18,7 @@ const createApiInstance = (baseURL) => {
       logout();
 
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = "/home";
       }
     }
     return Promise.reject(error);
