@@ -59,7 +59,7 @@ export default function DeactivationImpactInfo({
             <p>
               To know more about this process, click this link:
               <br />
-              <a href="https://youtu.be/Aq5WXmQQooo?si=HMI24Z2IIoJDSKRX">
+              <a href="/terms-and-condition" target="_blank">
                 FAQs about account deletion
               </a>
             </p>
