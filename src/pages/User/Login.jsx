@@ -1,11 +1,11 @@
 import { Button, Form, Input, App } from "antd";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import AntButton from "../components/Button";
-import Divider from "../components/Divider";
-import Header from "../components/Header";
-import { useAuthStore } from "../store/useAuth";
-import { googleLogin, useLoginApi } from "../services/useAuth";
+import AntButton from "../../components/Button";
+import Divider from "../../components/Divider";
+import Header from "../../components/Header";
+import { useAuthStore } from "../../store/useAuth";
+import { googleLogin, useLoginApi } from "../../services/useAuth";
 import { useState } from "react";
 
 const Login = () => {

@@ -1,10 +1,10 @@
 import { useSearchParams } from "react-router-dom";
 import { Form, Button, Input } from "antd";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useState } from "react";
 import { App } from "antd";
-import { useResetPasswordApi } from "../services/useAuth";
-import PasswordResetModal from "../components/modals/PasswordResetModal";
+import { useResetPasswordApi } from "../../services/useAuth";
+import PasswordResetModal from "../../components/modals/PasswordResetModal";
 
 const SetUpNewPassword = () => {
   const resetPasswordApi = useResetPasswordApi();

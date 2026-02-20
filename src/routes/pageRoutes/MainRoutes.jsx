@@ -1,16 +1,16 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuth";
 import Main from "../../layout/Main";
-import Home from "../../pages/Home";
-import EditProfile from "../../pages/EditProfile";
+import Home from "../../pages/User/Home";
+import EditProfile from "../../pages/User/EditProfile";
 import AuthLayout from "../../layout/AuthLayout";
-import SignUp from "../../pages/SignUp";
-import ForgotPassword from "../../pages/ForgotPassword";
-import SetUpNewPassword from "../../pages/SetUpNewPassword";
-import Login from "../../pages/Login";
-import LoggingRedirect from "../../pages/LoggingRedirect";
+import SignUp from "../../pages/User/SignUp";
+import ForgotPassword from "../../pages/User/ForgotPassword";
+import SetUpNewPassword from "../../pages/User/SetUpNewPassword";
+import Login from "../../pages/User/Login";
+import LoggingRedirect from "../../pages/User/LoggingRedirect";
 import SettingsLayout from "../../layout/SettingsLayout";
-import AccountOption from "../../pages/AccountOption";
+import AccountOption from "../../pages/User/AccountOption";
 
 const MainRoutes = () => {
   const userData = useAuthStore((state) => state.userData);

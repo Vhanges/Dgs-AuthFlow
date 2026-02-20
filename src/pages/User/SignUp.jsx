@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { GoArrowLeft } from "react-icons/go";
 import { Button, Modal, Form, Input } from "antd";
-import Header from "../components/Header";
-import { useSignUpApi } from "../services/useAuth";
+import Header from "../../components/Header";
+import { useSignUpApi } from "../../services/useAuth";
 import { useState } from "react";
-import SignUpModal from "../components/modals/SignUpModal";
+import SignUpModal from "../../components/modals/SignUpModal";
 
 const SignUp = () => {
   const signUpApi = useSignUpApi();

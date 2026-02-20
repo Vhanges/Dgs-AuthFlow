@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
-import { useGetAllGalleryPhotos } from "../services/galleryService";
-import { useAuthStore } from "../store/useAuth";
+import { useGetAllGalleryPhotos } from "../../services/galleryService";
+import { useAuthStore } from "../../store/useAuth";
 import { Button } from "antd";
 
 import { Link } from "react-router-dom";
-import UploadPhotoModal from "../components/modals/UploadPhotoModal";
+import UploadPhotoModal from "../../components/modals/UploadPhotoModal";
 const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 const placeHolder = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
 

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
 import { Form, Input, Button } from "antd";
-import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
-import Header from "../components/Header";
-import { useForgotPasswordApi } from "../services/useAuth";
+import ForgotPasswordModal from "../../components/modals/ForgotPasswordModal";
+import Header from "../../components/Header";
+import { useForgotPasswordApi } from "../../services/useAuth";
 
 const ForgotPassword = () => {
   const forgotPasswordApi = useForgotPasswordApi();

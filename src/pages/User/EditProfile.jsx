@@ -1,30 +1,14 @@
-import { ArrowLeftOutlined, DeleteOutlined } from "@ant-design/icons";
-import DeactivateAccountModal from "../components/modals/DeactivateAccountModal";
-import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { message } from "antd";
-import AntButton from "../components/Button";
+import { Button, Form, message } from "antd";
 import {
   useEditUserProfile,
   useGetProfile,
-  useUpdateUserPhoto,
-} from "../services/userProfileService";
-import { useAuthStore } from "../store/useAuth";
-import DeletionImpactInfo from "../components/modals/DeleteAccount/DeletionImpactInfo";
-import DeletionAuthVerify from "../components/modals/DeleteAccount/DeletionAuthVerify";
-import DeletionFinalConfirmation from "../components/modals/DeleteAccount/DeletionFinalConfirmation";
-import DeleteAccountModal from "../components/modals/DeleteAccountModal";
-import Header from "../components/Header";
-const PLACEHOLDER_IMAGE =
-  "https://via.assets.so/img.jpg?w=184&h=184&bg=e5e7eb&f=png";
-const DOMAIN_URL = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
+} from "../../services/userProfileService";
+import { useAuthStore } from "../../store/useAuth";
+import Header from "../../components/Header";
+import Avatar from "../../components/Avatar";
 
 const EditProfile = () => {
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [openAuthVerifyModal, setOpenAuthVerifyModal] = useState(false);
-  const [openFinalConfirmModal, setOpenFinalConfirmModal] = useState(false);
-  const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
-  const [isGoogleDeletion, setIsGoogleDeletion] = useState(false);
   const isInitialized = useRef(false);
   const [formData, setFormData] = useState({
     display_name: "",
@@ -38,7 +22,6 @@ const EditProfile = () => {
   const { userData: profile, setUserData } = useAuthStore();
   const { isLoading } = useGetProfile();
   const editProfileMutation = useEditUserProfile();
-  const updateUserPhoto = useUpdateUserPhoto();
 
   useEffect(() => {
     if (profile && !isInitialized.current) {
@@ -59,28 +42,6 @@ const EditProfile = () => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleProfilePhotoUpload = async (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    try {
-      await updateUserPhoto.mutateAsync(file, {
-        onSuccess: async (data) => {
-          console.log("hello1", data);
-          setUserData(data.data);
-        },
-      });
-
-      message.success("Profile updated successfully!");
-    } catch (error) {
-      console.error("Updated Failed", error);
-      const errorMessage =
-        error.response?.data?.message || "Updating profile failed";
-      message.error(errorMessage);
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -109,11 +70,6 @@ const EditProfile = () => {
     }
   };
 
-  const handleGoogleDeletion = () => {
-    setIsGoogleDeletion(true);
-    setOpenFinalConfirmModal(true);
-  };
-
   return (
     <div className="text-primary w-full h-full flex flex-col items-start pt-10 ">
       <div className="w-full flex justify-center">
@@ -122,35 +78,18 @@ const EditProfile = () => {
             title="Edit Profile"
             subtitle="Manage your personal information."
           />
-          <div className="w-full flex items-center gap-4">
-            <img
-              src={
-                profile?.avatar_url
-                  ? DOMAIN_URL + profile?.avatar_url
-                  : PLACEHOLDER_IMAGE
-              }
-              alt="Profile"
-              className="h-28 w-28 rounded-full"
-            />
-            <label className="w-fit cursor-pointer text-secondary border-2 border-secondary py-2 px-2 text-sm rounded-[10px] text-center">
-              Upload new photo
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleProfilePhotoUpload}
-              />
-            </label>
-          </div>
+          <Avatar />
+
           <div className="w-8/12 flex flex-col items-center justify-center gap-2">
             {isLoading ? (
               <div className="w-full flex justify-center items-center py-10">
                 <p className="text-gray-500">Loading profile...</p>
               </div>
             ) : (
-              <form
+              <Form
                 className="w-full flex flex-col gap-4"
-                onSubmit={handleSubmit}
+                onFinish={handleSubmit}
+                layout="vertical"
               >
                 <div className="relative w-full">
                   <label
@@ -212,61 +151,26 @@ const EditProfile = () => {
                     title="Email cannot be changed"
                   />
                 </div>
-                <button
-                  type="submit"
-                  disabled={editProfileMutation.isPending}
-                  className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
-                >
-                  {editProfileMutation.isPending
-                    ? "Updating..."
-                    : "Update Account"}
-                </button>
-              </form>
+                <div className="flex gap-4">
+                  <Button
+                    htmlType="submit"
+                    type="primary"
+                    disabled={editProfileMutation.isPending}
+                    className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                  >
+                    {editProfileMutation.isPending
+                      ? "Updating..."
+                      : "Update Account"}
+                  </Button>
+                  <Button className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50">
+                    Preview Account
+                  </Button>
+                </div>
+              </Form>
             )}
           </div>
         </div>
       </div>
-
-      <DeactivateAccountModal
-        openModal={openDeactivateModal}
-        onClose={() => setOpenDeactivateModal(false)}
-      />
-
-      {openDeleteModal && (
-        <DeletionImpactInfo
-          openModal={openDeleteModal}
-          onClose={() => setOpenDeleteModal(false)}
-          onProceed={() => {
-            if (!profile?.google_id) {
-              setOpenAuthVerifyModal(true);
-            } else {
-              handleGoogleDeletion();
-            }
-          }}
-        />
-      )}
-
-      {openAuthVerifyModal && (
-        <DeletionAuthVerify
-          openModal={openAuthVerifyModal}
-          onClose={() => setOpenAuthVerifyModal(false)}
-          onVerified={() => {
-            setOpenAuthVerifyModal(false);
-            setOpenFinalConfirmModal(true);
-          }}
-        />
-      )}
-
-      {openFinalConfirmModal && (
-        <DeletionFinalConfirmation
-          openModal={openFinalConfirmModal}
-          onClose={() => {
-            setOpenFinalConfirmModal(false);
-            setIsGoogleDeletion(false);
-          }}
-          isGoogleAccount={isGoogleDeletion}
-        />
-      )}
     </div>
   );
 };
