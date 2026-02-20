@@ -11,6 +11,7 @@ import Login from "../../pages/User/Login";
 import LoggingRedirect from "../../pages/User/LoggingRedirect";
 import SettingsLayout from "../../layout/SettingsLayout";
 import AccountOption from "../../pages/User/AccountOption";
+import TermsAndCondition from "../../pages/TermsAndCondition";
 
 const MainRoutes = () => {
   const userData = useAuthStore((state) => state.userData);
@@ -19,6 +20,7 @@ const MainRoutes = () => {
 
   return (
     <Routes>
+      <Route path="/terms-and-condition" element={<TermsAndCondition />} />
       {isAuthenticated ? (
         <>
           <Route element={<Main />}>

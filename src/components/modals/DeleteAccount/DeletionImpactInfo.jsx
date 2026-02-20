@@ -59,9 +59,7 @@ export default function DeletionImpactInfo({ openModal, onClose, onProceed }) {
             <br />
             <p>
               To know more about this process, click this link: <br />{" "}
-              <a href="https://youtu.be/Aq5WXmQQooo?si=HMI24Z2IIoJDSKRX">
-                FAQs about account deletion{" "}
-              </a>
+              <a href="/terms-and-condition">FAQs about account deletion </a>
             </p>
           </p>
         </div>
