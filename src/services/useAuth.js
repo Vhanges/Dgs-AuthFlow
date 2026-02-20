@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "./axiosInstance";
+import ApiService from "./axiosConfig";
 
 const api = import.meta.env.VITE_API_BASE_URL;
 
@@ -21,6 +22,47 @@ export const useLoginApi = () =>
 export const googleLogin = () => {
   window.location.href = `${api}/auth/google`;
 };
+
+export const useVerifyPassword = () =>
+  useMutation({
+    mutationFn: async (password) => {
+      const response = await ApiService.versionedApi.post(
+        "/user/verify",
+        { password }  
+      );
+      return response;
+    },
+  });
+
+export const useDeactivateAccount = () =>
+  useMutation({
+    mutationFn: async (verificationToken) => {
+      const response = await ApiService.versionedApi.patch("/user/deactivate", {
+        verificationToken,
+      });
+      return response;
+    },
+  });
+
+export const useDeleteAccount = () =>
+  useMutation({
+    mutationFn: async () => {
+      const response = await ApiService.versionedApi.delete("/user", {
+        data: { confirm: true },   
+      });
+      return response.data;
+    },
+  });
+
+export const useGoogleDeleteAccount = () =>
+  useMutation({
+    mutationFn: async () => {
+      const response = await ApiService.versionedApi.post(
+        "/user/google/deactivate"
+      );
+      return response;
+    },
+  });
 
 export const useLogout = () => {
   return useMutation({

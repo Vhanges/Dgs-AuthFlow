@@ -1,27 +1,23 @@
 import { Modal, message, Form, Input } from "antd";
 import { LockOutlined } from "@ant-design/icons";
-import { useVerifyPasswordForDeletion } from "../../../services/userProfileService";
-import { useAuthStore } from "../../../store/useAuth";
+import { useVerifyPassword } from "../../../services/useAuth";
 
 export default function DeletionAuthVerify({ openModal, onClose, onVerified }) {
   const [form] = Form.useForm();
-  const verifyPasswordMutation = useVerifyPasswordForDeletion();
-  const { setDeletionToken } = useAuthStore();
+  const verifyPasswordMutation = useVerifyPassword();
 
   const handleSubmit = async (values) => {
     try {
-      const response = await verifyPasswordMutation.mutateAsync(
-        values.password
-      );
-      
-      // Check if verification was successful
-      if (response.status === "success" && response.data?.verificationToken) {
-        setDeletionToken(response.data.verificationToken);
-        message.success("Password verified successfully");
-        onVerified();
-        onClose();
-        form.resetFields();
-      }
+        await verifyPasswordMutation.mutateAsync(
+          values.password, {
+            onSuccess: () => {
+              onVerified();
+              onClose();
+              form.resetFields();
+            }
+          }
+        );
+        
     } catch (error) {
       console.error("Verification Failed:", error);
       
