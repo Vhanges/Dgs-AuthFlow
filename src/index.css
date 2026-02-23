@@ -8,12 +8,13 @@
   --color-tertiary: #32a5da;
   --color-dark-gray: #353232;
   --color-dirty-white: #fbfbfb;
+  --color-light-slate: oklch(96.8% 0.007 247.896);
   --font-poppins: "Poppins", "sans-serif";
 }
 
 body {
   color: black;
-  background-color: white;
+  background-color: oklch(96.8% 0.007 247.896);
   overflow-y: hidden;
   font-family: var(--font-poppins);
 }

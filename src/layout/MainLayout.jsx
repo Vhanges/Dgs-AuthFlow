@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useAuthStore } from "../store/useAuth";
 const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;

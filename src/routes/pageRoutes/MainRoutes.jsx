@@ -12,6 +12,7 @@ import LoggingRedirect from "../../pages/User/LoggingRedirect";
 import MainLayout from "../../layout/MainLayout";
 import AccountOption from "../../pages/User/AccountOption";
 import TermsAndCondition from "../../pages/TermsAndCondition";
+import Chat from "../../pages/User/Chat";
 
 const MainRoutes = () => {
   const userData = useAuthStore((state) => state.userData);
@@ -32,6 +33,10 @@ const MainRoutes = () => {
             <Route
               path="/setting/account-option"
               element={<AccountOption />}
+            ></Route>
+            <Route
+              path="/chat"
+              element={<Chat />}
             ></Route>
           </Route>
 

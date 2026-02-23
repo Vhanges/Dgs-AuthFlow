@@ -75,6 +75,7 @@ const EditProfile = () => {
       {
         onSuccess: ({ data }) => {
           setUserData(data);
+          console.log(data)
           setFormData({
             display_name: data.display_name || "",
             age: data.age || "",
