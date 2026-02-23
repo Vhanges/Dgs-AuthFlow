@@ -12,19 +12,19 @@ const createApiInstance = (baseURL) => {
 
   const handleSuccess = (response) => response.data;
 
-  const handleAuthError = (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      const { logout } = useAuthStore.getState();
-      logout();
+  // const handleAuthError = (error) => {
+  //   if (error.response?.status === 401 || error.response?.status === 403) {
+  //     const { logout } = useAuthStore.getState();
+  //     logout();
 
-      if (typeof window !== "undefined") {
-        window.location.href = "/home";
-      }
-    }
-    return Promise.reject(error);
-  };
-
-  instance.interceptors.response.use(handleSuccess, handleAuthError);
+  //     if (typeof window !== "undefined") {
+  //       window.location.href = "/home";
+  //     }
+  //   }
+  //   return Promise.reject(error);
+  // };
+//  handleAuthError
+  instance.interceptors.response.use(handleSuccess,);
 
   return instance;
 };

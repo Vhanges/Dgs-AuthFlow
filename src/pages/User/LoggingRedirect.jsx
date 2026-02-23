@@ -8,7 +8,7 @@ const LoggingRedirect = () => {
   const { setUserData } = useAuthStore();
 
   const { data, isSuccess } = useGetProfile({
-    retry: false,
+    retry: false, 
     refetchOnWindowFocus: false,
   });
 
@@ -16,7 +16,7 @@ const LoggingRedirect = () => {
     if (isSuccess && data) {
       console.log(data.data);
       setUserData(data.data);
-      navigate("/home");
+      // navigate("/home");
     }
   }, [data, isSuccess, setUserData, navigate]);
 

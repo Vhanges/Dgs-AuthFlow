@@ -90,7 +90,7 @@ const MainLayout = () => {
       </div>
 
       <div
-        className={`overflow-y-auto w-full flex flex-col pt-6 border rounded-md border-black px-10 
+        className={`overflow-y-auto w-full flex flex-col rounded-md
           items-start justify-start`}
       >
         <Outlet />
