@@ -130,7 +130,7 @@ const Chat = ({children}) => {
                     />
                 </div>
                 {/* Chats */}
-                <div className="flex-1 overflow-y-auto" style={{ maxHeight: "90%" }}>
+                <div className="flex-1 overflow-y-auto mb-10" style={{ maxHeight: "85%" }}>
                     {filteredChats.map((chat, key) => (
                         <div className={`flex items-center gap-4 p-2 rounded-2xl ${activeChatId === chat.chat_id ? "bg-gray-100": ""}`} key={key} onClick={()=> {setActiveChatId(chat.chat_id)}}>
                             <span className="h-12 w-12 relative">
