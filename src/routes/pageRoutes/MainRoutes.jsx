@@ -26,10 +26,7 @@ const MainRoutes = () => {
         <>
           <Route element={<MainLayout />}>
             <Route path="/home" element={<Home />} />
-            <Route
-              path="/setting/edit-profile"
-              element={<EditProfile />}
-            ></Route>
+            <Route path="/edit-profile" element={<EditProfile />}></Route>
             <Route
               path="/setting/account-option"
               element={<AccountOption />}
