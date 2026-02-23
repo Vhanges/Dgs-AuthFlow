@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { Form, Button, Input } from "antd";
-import Header from "../../components/Header";
+import Heading from "../../components/Heading";
 import { useState } from "react";
 import { App } from "antd";
 import { useResetPasswordApi } from "../../services/useAuth";
@@ -41,14 +41,14 @@ const SetUpNewPassword = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-8">
       <Form
         onFinish={handleSubmit}
-        className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
+        className="flex flex-col gap-6"
         disabled={resetPasswordApi.isPending}
         layout="vertical"
       >
-        <Header
+        <Heading
           title="Set up a New Password"
           subtitle="Create a unique passphrase for every account to prevent a single breach from compromising all your data."
         />
@@ -119,7 +119,7 @@ const SetUpNewPassword = () => {
       </Form>
 
       <PasswordResetModal isOpen={isModalOpen} onClose={closeModal} />
-    </>
+    </div>
   );
 };
 

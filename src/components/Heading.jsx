@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const Header = ({ title, subtitle }) => {
+const Heading = ({ title, subtitle }) => {
   return (
     <div>
       <h1 className={`font-poppins text-[1.8rem] font-bold`}>{title}</h1>
@@ -9,9 +9,9 @@ const Header = ({ title, subtitle }) => {
   );
 };
 
-Header.propTypes = {
+Heading.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
 };
 
-export default Header;
+export default Heading;

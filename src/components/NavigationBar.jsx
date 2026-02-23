@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/useAuth";
-import { useLogout } from "../../services/useAuth";
-import iconLogo from "../../assets/iconLogo.png";
+import { useAuthStore } from "../store/useAuth";
+import { useLogout } from "../services/useAuth";
+import iconLogo from "../assets/iconLogo.png";
 import {
   DownOutlined,
   SettingOutlined,
   LogoutOutlined,
   UserOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
-const placeHolder = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
 const items = [
   {
     key: "1",
@@ -27,7 +27,7 @@ const items = [
   },
 ];
 
-const Header = () => {
+const NavigationBar = () => {
   const navigate = useNavigate();
 
   const profile = useAuthStore((state) => state.userData);
@@ -51,18 +51,27 @@ const Header = () => {
       <div className="flex flex-row items-center justify-center gap-3">
         <img src={iconLogo} alt="Place Holder" className="h-13 w-13" />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex gap-3">
+        <div className="h-10 w-10 bg-gray-200 cursor-pointer rounded-full flex justify-center items-center relative">
+          <MessageOutlined className="text-xl text-gray-700!" />
+          <div className="flex justify-center items-center w-4 h-4 absolute bottom-1 right-1.5 bg-gray-200 rounded-full z-100">
+            <p className="text-sm text-red-400! rounded-full z-100">1</p>
+          </div>
+        </div>
         <Dropdown menu={{ items, onClick: handleMenuClick }}>
           <Space>
-            <img
-              src={
-                profile.avatar_url
-                  ? domainUrl + profile.avatar_url
-                  : placeHolder
-              }
-              alt="Place Holder"
-              className="h-12 w-12 rounded-full"
-            />
+            {profile.avatar_url ? (
+              <img
+                src={domainUrl + profile.avatar_url}
+                alt="Place Holder"
+                className="h-10 w-10 rounded-full"
+              />
+            ) : (
+              <div className="h-10 w-10  rounded-full bg-gray-200 flex justify-center items-center">
+                <UserOutlined className="text-md text-gray-700!" />
+              </div>
+            )}
+
             <DownOutlined />
           </Space>
         </Dropdown>
@@ -71,4 +80,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default NavigationBar;

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { GoArrowLeft } from "react-icons/go";
 import { Button, Modal, Form, Input } from "antd";
-import Header from "../../components/Header";
+import Heading from "../../components/Heading";
 import { useSignUpApi } from "../../services/useAuth";
 import { useState } from "react";
 import SignUpModal from "../../components/modals/SignUpModal";
@@ -36,7 +36,7 @@ const SignUp = () => {
       className="flex flex-col gap-6 w-full max-w-md mx-auto px-8"
       noValidate
     >
-      <Header
+      <Heading
         title="Sign Up"
         subtitle="Kindly fill up the needed information below"
       />

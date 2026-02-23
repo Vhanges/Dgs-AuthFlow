@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useGetProfile } from "../../services/userProfileService";
 import { useAuthStore } from "../../store/useAuth";
-import { useNavigate } from "react-router-dom"; // ✅ useNavigate, not Navigate
+import { useNavigate } from "react-router-dom";
 
 const LoggingRedirect = () => {
   const navigate = useNavigate();

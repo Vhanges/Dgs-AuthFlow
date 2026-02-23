@@ -3,7 +3,7 @@ import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import AntButton from "../../components/Button";
 import Divider from "../../components/Divider";
-import Header from "../../components/Header";
+import Heading from "../../components/Heading";
 import { useAuthStore } from "../../store/useAuth";
 import { googleLogin, useLoginApi } from "../../services/useAuth";
 import { useState } from "react";
@@ -41,25 +41,26 @@ const Login = () => {
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-8">
-      <Header title="Login" subtitle="Enter email and password" />
+      <Heading title="Login" subtitle="Enter email and password" />
 
       <Form
         onFinish={handleSubmit}
         layout="vertical"
         initialValues={{
-          email: "ligey34693@fentaoba.com",
-          password: "password1234",
+          email: "sekata6515@iaciu.com",
+          password: "password123456",
         }}
         disabled={loginApi.isPending}
         className="flex flex-col gap-6"
       >
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col">
           <Form.Item
             name="email"
             rules={[
               { required: true, message: "Please input your email" },
               { type: "email" },
             ]}
+            className="mb-3!"
           >
             <div className="relative w-full">
               <label
@@ -83,6 +84,7 @@ const Login = () => {
           <Form.Item
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
+            className="mb-1!"
           >
             <div className="relative w-full">
               <label
@@ -127,16 +129,17 @@ const Login = () => {
 
           <Divider />
 
-          <AntButton
-            type="button"
+          <Button
             onClick={handleGoogleLogin}
             disabled={loginApi.isPending}
             variant="secondary"
-            className="cursor-pointer bg-gray-300 flex justify-center items-center rounded-md p-2 gap-2"
+            block
+            size="large"
+            className="border! border-gray-600! hover:border-primary!"
           >
             <FaGoogle />
             <span className="text-sm font-medium">Sign in with Google</span>
-          </AntButton>
+          </Button>
         </div>
       </Form>
 

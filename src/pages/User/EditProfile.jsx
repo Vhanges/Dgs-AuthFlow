@@ -4,7 +4,7 @@ import { useEditUserProfile } from "../../services/userProfileService";
 import { useAuthStore } from "../../store/useAuth";
 import { pdf } from "@react-pdf/renderer";
 import ProfilePDF from "./ProfilePDF";
-import Header from "../../components/Header";
+import Heading from "../../components/Heading";
 import Avatar from "../../components/Avatar";
 import { useGetAllGalleryPhotos } from "../../services/galleryService";
 
@@ -95,7 +95,7 @@ const EditProfile = () => {
     <div className="text-primary w-full h-full flex flex-col items-start pt-10 ">
       <div className="w-full flex justify-center">
         <div className="w-full flex flex-col justify-center gap-6">
-          <Header
+          <Heading
             title="Edit Profile"
             subtitle="Manage your personal information."
           />
@@ -165,19 +165,23 @@ const EditProfile = () => {
                 />
               </Form.Item>
               <div className="flex gap-4">
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  disabled={editProfileMutation.isPending}
-                  className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
-                >
-                  {editProfileMutation.isPending
-                    ? "Updating..."
-                    : "Update Account"}
-                </Button>
+                <Form.Item>
+                  <Button
+                    htmlType="submit"
+                    type="primary"
+                    block
+                    disabled={editProfileMutation.isPending}
+                    className=" cursor-pointer text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                  >
+                    {editProfileMutation.isPending
+                      ? "Updating..."
+                      : "Update Account"}
+                  </Button>
+                </Form.Item>
                 <Button
                   onClick={handlePreview}
-                  className=" cursor-pointer w-6/12 text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
+                  block
+                  className=" cursor-pointer text-white border-2 bg-secondary py-2 px-2 text-md font-bold rounded-[10px] disabled:opacity-50"
                 >
                   Preview Account
                 </Button>

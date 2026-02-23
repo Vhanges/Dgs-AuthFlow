@@ -4,7 +4,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
 import { Form, Input, Button } from "antd";
 import ForgotPasswordModal from "../../components/modals/ForgotPasswordModal";
-import Header from "../../components/Header";
+import Heading from "../../components/Heading";
 import { useForgotPasswordApi } from "../../services/useAuth";
 
 const ForgotPassword = () => {
@@ -28,14 +28,14 @@ const ForgotPassword = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-8">
       <Form
         onFinish={handleSubmit}
-        className="flex flex-col gap-6 w-full max-w-md mx-auto px-8 pt-8"
+        className="flex flex-col gap-6"
         layout="vertical"
         disabled={forgotPasswordApi.isPending}
       >
-        <Header
+        <Heading
           title="Forgot Password"
           subtitle="The instructions will be sent to the email you provide."
         />
@@ -99,7 +99,7 @@ const ForgotPassword = () => {
       </Form>
 
       <ForgotPasswordModal isOpen={isModalOpen} onClose={closeModal} />
-    </>
+    </div>
   );
 };
 

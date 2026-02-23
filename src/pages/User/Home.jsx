@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { useGetAllGalleryPhotos } from "../../services/galleryService";
 import { useAuthStore } from "../../store/useAuth";
+import { UserOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
 import { Link } from "react-router-dom";
 import UploadPhotoModal from "../../components/modals/UploadPhotoModal";
 const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
-const placeHolder = "https://via.assets.so/img.jpg?w=600&h=600&bg=e5e7eb&f=png";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,13 +33,17 @@ const Home = () => {
       }  border`}
     >
       <div className="flex justify-start pl-25 items-center w-full gap-4">
-        <img
-          src={
-            profile.avatar_url ? domainUrl + profile.avatar_url : placeHolder
-          }
-          alt="Place Holder"
-          className="h-22 w-22 rounded-full"
-        />
+        {profile.avatar_url ? (
+          <img
+            src={domainUrl + profile.avatar_url}
+            alt="Place Holder"
+            className="h-22 w-22 rounded-full"
+          />
+        ) : (
+          <div className="h-22 w-22  rounded-full bg-gray-200 flex justify-center items-center">
+            <UserOutlined className="text-5xl text-gray-700!" />
+          </div>
+        )}
         <div className="flex flex-col gap-4">
           <h4 className="text-black text-4xl font-bold">
             {profile.display_name}

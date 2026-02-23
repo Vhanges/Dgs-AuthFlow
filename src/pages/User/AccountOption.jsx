@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Header from "../../components/Header";
+import Heading from "../../components/Heading";
 import DeletionImpactInfo from "../../components/modals/DeleteAccount/DeletionImpactInfo";
 import DeletionAuthVerify from "../../components/modals/DeleteAccount/DeletionAuthVerify";
 import DeletionFinalConfirmation from "../../components/modals/DeleteAccount/DeletionFinalConfirmation";
-import DeletionResult  from "../../components/modals/DeleteAccount/DeletionResult";
+import DeletionResult from "../../components/modals/DeleteAccount/DeletionResult";
 import { useAuthStore } from "../../store/useAuth";
 import DeactivationImpactInfo from "../../components/modals/DeactivateAccount/DeactivationImpactInfo";
 import DeactivationAuthVerify from "../../components/modals/DeactivateAccount/DeactivationAuthVerify";
@@ -16,12 +16,15 @@ const AccountOption = () => {
   const [openImpactInfo, setOpenImpactInfo] = useState(false);
   const [openDeletionSuccess, setOpenDeletionSuccess] = useState(false);
   const [isGoogleDeletion, setIsGoogleDeletion] = useState(false);
-  const [openDeactivateImpactInfo, setOpenDeactivateImpactInfo] = useState(false);
-  const [openDeactivateAuthVerify, setOpenDeactivateAuthVerify] = useState(false);
-  const [openDeactivateFinalConfirm, setOpenDeactivateFinalConfirm] = useState(false);
+  const [openDeactivateImpactInfo, setOpenDeactivateImpactInfo] =
+    useState(false);
+  const [openDeactivateAuthVerify, setOpenDeactivateAuthVerify] =
+    useState(false);
+  const [openDeactivateFinalConfirm, setOpenDeactivateFinalConfirm] =
+    useState(false);
   const [openDeactivateSuccess, setOpenDeactivateSuccess] = useState(false);
-  const [deletionResult, setDeletionResult] = useState('');
-  const [deactivationResult, setDeactivationResult] = useState('');
+  const [deletionResult, setDeletionResult] = useState("");
+  const [deactivationResult, setDeactivationResult] = useState("");
 
   const { userData: profile } = useAuthStore();
 
@@ -44,7 +47,7 @@ const AccountOption = () => {
 
   return (
     <div className="text-primary w-full h-full flex flex-col items-start pt-10 gap-4">
-      <Header
+      <Heading
         title="Deactivate Account"
         subtitle="
           Temporarily disable your account. You can reactivate it anytime by
@@ -90,12 +93,11 @@ const AccountOption = () => {
             setOpenDeactivateFinalConfirm(false);
             setIsGoogleDeletion(false);
           }}
-          result={ (result) => {
-            setDeactivationResult(result)
-            }
-          }
-          onConfirm={() =>{
-            setOpenDeactivateFinalConfirm(false);            
+          result={(result) => {
+            setDeactivationResult(result);
+          }}
+          onConfirm={() => {
+            setOpenDeactivateFinalConfirm(false);
             setOpenDeactivateSuccess(true);
             setIsGoogleDeletion(false);
           }}
@@ -113,7 +115,7 @@ const AccountOption = () => {
         />
       )}
 
-      <Header
+      <Heading
         title="Delete Account"
         subtitle="
           Permanently delete your account and all associated data. This action
@@ -162,14 +164,12 @@ const AccountOption = () => {
           onClose={() => {
             setOpenFinalConfirmModal(false);
             setIsGoogleDeletion(false);
-            
           }}
-          result={ (deletionResult) => {
-            setDeletionResult(deletionResult)
-            }
-          }
+          result={(deletionResult) => {
+            setDeletionResult(deletionResult);
+          }}
           isGoogleAccount={isGoogleDeletion}
-          onConfirm={() =>{
+          onConfirm={() => {
             setOpenFinalConfirmModal(false);
             setOpenDeletionSuccess(true);
             setIsGoogleDeletion(false);

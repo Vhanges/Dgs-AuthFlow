@@ -9,7 +9,7 @@ import ForgotPassword from "../../pages/User/ForgotPassword";
 import SetUpNewPassword from "../../pages/User/SetUpNewPassword";
 import Login from "../../pages/User/Login";
 import LoggingRedirect from "../../pages/User/LoggingRedirect";
-import SettingsLayout from "../../layout/SettingsLayout";
+import ChatLayout from "../../layout/ChatLayout";
 import AccountOption from "../../pages/User/AccountOption";
 import TermsAndCondition from "../../pages/TermsAndCondition";
 
@@ -25,7 +25,7 @@ const MainRoutes = () => {
         <>
           <Route element={<Main />}>
             <Route path="/home" element={<Home />} />
-            <Route element={<SettingsLayout />}>
+            <Route element={<ChatLayout />}>
               <Route
                 path="/setting/edit-profile"
                 element={<EditProfile />}
