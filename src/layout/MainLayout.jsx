@@ -1,13 +1,16 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { HomeOutlined } from "@ant-design/icons";
 import clsx from "clsx";
+import { useAuthStore } from "../store/useAuth";
+const domainUrl = import.meta.env.VITE_API_BASE_URL_NO_VERSION;
 
-const ChatLayout = () => {
+const MainLayout = () => {
   const { pathname } = useLocation();
+  const profile = useAuthStore((state) => state.userData);
 
   return (
     <div className="text-white w-full flex gap-18 relative">
-      <div className="pt-10 pb-5 h-140.5 w-100 flex flex-col justify-between">
+      <div className="pt-10 pb-5 h-screen flex flex-col justify-between">
         <div className="flex flex-col gap-1">
           <Link
             className={clsx(
@@ -32,17 +35,33 @@ const ChatLayout = () => {
             Account
           </Link>
         </div>
-        <Link
-          to="/home"
-          className="flex hover:bg-gray-200! gap-2 py-2 px-2 text-md font-medium justify-center items-center"
-        >
-          <HomeOutlined className="text-primary!" />
-          <p className="text-primary text-[14px]">Home</p>
-        </Link>
+        <div>
+          {profile.avatar_url ? (
+            <>
+              {" "}
+              <img
+                src={domainUrl + profile.avatar_url}
+                alt="Place Holder"
+                className="h-10 w-10 rounded-full"
+              />{" "}
+              <Link
+                to="/home"
+                className="flex hover:bg-gray-200! gap-2 py-2 px-2 text-md font-medium justify-center items-center"
+              >
+                <HomeOutlined className="text-primary!" />
+                <p className="text-primary text-[14px]">Home</p>
+              </Link>
+            </>
+          ) : (
+            <div className="h-10 w-10  rounded-full bg-gray-200 flex justify-center items-center">
+              <UserOutlined className="text-md text-gray-700!" />
+            </div>
+          )}
+        </div>
       </div>
       <Outlet />
     </div>
   );
 };
 
-export default ChatLayout;
+export default MainLayout;

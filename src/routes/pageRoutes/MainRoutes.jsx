@@ -9,7 +9,7 @@ import ForgotPassword from "../../pages/User/ForgotPassword";
 import SetUpNewPassword from "../../pages/User/SetUpNewPassword";
 import Login from "../../pages/User/Login";
 import LoggingRedirect from "../../pages/User/LoggingRedirect";
-import ChatLayout from "../../layout/ChatLayout";
+import MainLayout from "../../layout/MainLayout";
 import AccountOption from "../../pages/User/AccountOption";
 import TermsAndCondition from "../../pages/TermsAndCondition";
 
@@ -23,18 +23,16 @@ const MainRoutes = () => {
       <Route path="/terms-and-condition" element={<TermsAndCondition />} />
       {isAuthenticated ? (
         <>
-          <Route element={<Main />}>
+          <Route element={<MainLayout />}>
             <Route path="/home" element={<Home />} />
-            <Route element={<ChatLayout />}>
-              <Route
-                path="/setting/edit-profile"
-                element={<EditProfile />}
-              ></Route>
-              <Route
-                path="/setting/account-option"
-                element={<AccountOption />}
-              ></Route>
-            </Route>
+            <Route
+              path="/setting/edit-profile"
+              element={<EditProfile />}
+            ></Route>
+            <Route
+              path="/setting/account-option"
+              element={<AccountOption />}
+            ></Route>
           </Route>
 
           <Route path="/login" element={<Navigate to="/home" replace />} />

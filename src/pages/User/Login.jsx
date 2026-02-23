@@ -47,8 +47,8 @@ const Login = () => {
         onFinish={handleSubmit}
         layout="vertical"
         initialValues={{
-          email: "ligey34693@fentaoba.com",
-          password: "password1234",
+          email: "sekata6515@iaciu.com",
+          password: "password123456",
         }}
         disabled={loginApi.isPending}
         className="flex flex-col gap-6"
