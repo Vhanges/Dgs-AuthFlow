@@ -36,11 +36,12 @@ export const useVerifyPassword = () =>
 
 export const useDeactivateAccount = () =>
   useMutation({
-    mutationFn: async (verificationToken) => {
-      const response = await ApiService.versionedApi.patch("/user/deactivate", {
-        verificationToken,
-      });
-      return response;
+    mutationFn: async () => {
+      const response = await ApiService.versionedApi.patch(
+        "/user/deactivate",
+        { confirm: true } // Pass the payload directly
+      );
+      return response.data;
     },
   });
 

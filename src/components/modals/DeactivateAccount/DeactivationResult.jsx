@@ -1,5 +1,7 @@
 import { Modal, Button, Result } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useLogout } from "../../../services/useAuth";
+import { useAuthStore } from "../../../store/useAuth";
 
 export default function DeactivationResult({ 
   openModal, 
@@ -7,10 +9,17 @@ export default function DeactivationResult({
   errorMessage, 
 }) {
   const navigate = useNavigate();
+  const logoutMutation = useLogout();
+  const clearAuth = useAuthStore((state) => state.logout);
 
-  const handleReturn = () => {
+  const handleLogout = () => {
+    clearAuth();
+
     navigate("/login", { replace: true });
-  };
+
+    logoutMutation.mutate();
+  }
+
 
   return (
     <Modal 
@@ -20,6 +29,8 @@ export default function DeactivationResult({
       closable={false}
       width={500}
     >
+
+    {/* TODO: Add a specific message  */}
       {status === "success" ? (
         <Result
           status="success"
@@ -34,7 +45,7 @@ export default function DeactivationResult({
           }
           extra={[
             <Button 
-              onClick={handleReturn}
+              onClick={handleLogout}
               type="primary" 
               key="login" 
               size="large"
