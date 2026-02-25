@@ -9,7 +9,12 @@
   --color-dark-gray: #353232;
   --color-dirty-white: #fbfbfb;
   --color-light-slate: oklch(96.8% 0.007 247.896);
+  --color-dark-slate: oklch(86.9% 0.022 252.894);
   --font-poppins: "Poppins", "sans-serif";
+}
+
+* {
+  font-family: var(--font-poppins)
 }
 
 body {
