@@ -13,11 +13,12 @@ import MainLayout from "../../layout/MainLayout";
 import AccountOption from "../../pages/User/AccountOption";
 import TermsAndCondition from "../../pages/TermsAndCondition";
 import Chat from "../../pages/User/Chat";
+import ChatView from "../../components/Chat/ChatView";
 
 const MainRoutes = () => {
   const userData = useAuthStore((state) => state.userData);
-  3;
-  const isAuthenticated = !!userData;
+  // const isAuthenticated = !!userData;
+  const isAuthenticated = true;
 
   return (
     <Routes>
@@ -34,7 +35,9 @@ const MainRoutes = () => {
             <Route
               path="/chat"
               element={<Chat />}
-            ></Route>
+            >
+              <Route path=":chatId" element={<ChatView/>} />
+            </Route>
           </Route>
 
           <Route path="/login" element={<Navigate to="/home" replace />} />

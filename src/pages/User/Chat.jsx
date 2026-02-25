@@ -1,112 +1,33 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Input } from "antd";
-import { useEffect, useMemo, useState } from "react";
-
-const Chat = ({children}) => {
+import { useMemo, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import useDebounce from "../../hooks/useDebounce";
+import chatList from "../../data/chatList"
+const Chat = () => {
 
 
     const [activeChatId, setActiveChatId] = useState(null);
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [debouncedQuery, setDebouncedQuery] = useState("");
+    const debouncedQuery = useDebounce(searchQuery, 250);
 
-    useEffect(() => {
-        const t = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 250);
-        console.log("LOGLOGLOG")
-        return () => clearTimeout(t);
-    }, [searchQuery] )
+    const navigate = useNavigate();
 
-    const chatList = useMemo(() => ([
-        {
-            "chat_id": "chat-001",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Felix",
-            "is_online": true,
-            "is_read": true,
-            "name": "Felix Miller",
-            "latest_message": "Did you see the latest update?"
-        },
-        {
-            "chat_id": "chat-002",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Sarah",
-            "is_online": false,
-            "is_read": false,
-            "name": "Sarah Jenkins",
-            "latest_message": "Let's catch up tomorrow."
-        },
-        {
-            "chat_id": "chat-003",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Marcus",
-            "is_online": true,
-            "is_read": false,
-            "name": "Marcus Thorne",
-            "latest_message": "The server is back up!"
-        },
-        {
-            "chat_id": "chat-004",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Elena",
-            "is_online": true,
-            "is_read": true,
-            "name": "Elena Rodriguez",
-            "latest_message": "Can you review that PR?"
-        },
-        {
-            "chat_id": "chat-005",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Hiro",
-            "is_online": false,
-            "is_read": false,
-            "name": "Hiroshi Tanaka",
-            "latest_message": "Sent you the files over email."
-        },
-        {
-            "chat_id": "chat-006",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Chloe",
-            "is_online": true,
-            "is_read": false,
-            "name": "Chloe Bennet",
-            "latest_message": "That sounds like a plan!"
-        },
-        {
-            "chat_id": "chat-007",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Jasper",
-            "is_online": false,
-            "is_read": true,
-            "name": "Jasper Vance",
-            "latest_message": "I'll be OOO for the rest of the day."
-        },
-        {
-            "chat_id": "chat-008",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Maya",
-            "is_online": true,
-            "is_read": true,
-            "name": "Maya Patel",
-            "latest_message": "Is the meeting still on for 3 PM?"
-        },
-        {
-            "chat_id": "chat-009",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Leo",
-            "is_online": true,
-            "is_read": true,
-            "name": "Leo Sterling",
-            "latest_message": "I just finished the design mockups."
-        },
-        {
-            "chat_id": "chat-010",
-            "avatar": "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Zoe",
-            "is_online": false,
-            "is_read": true,
-            "name": "Zoe Night",
-            "latest_message": "Goodnight! Talk soon."
-        }
-    ]), []);
 
     const filteredChats = useMemo(() => {
         if (!debouncedQuery) return chatList;
         const q = debouncedQuery.toLowerCase();
         return chatList.filter(c => 
-            c.name.toLowerCase().includes(q) || 
-            c.latest_message.toLowerCase().includes(q)
+            c.user.name.toLowerCase().includes(q) || 
+            c.latest_message.content.toLowerCase().includes(q)
         )
-    }, [debouncedQuery, chatList]);
+    }, [debouncedQuery]);
+
+    const handleChatClick = (chatId) => {
+        setActiveChatId(chatId);
+        navigate(`/chat/${chatId}`);
+    } 
 
     return(
         <div className="w-full h-full flex p-4 gap-4 text-black">
@@ -132,14 +53,16 @@ const Chat = ({children}) => {
                 {/* Chats */}
                 <div className="flex-1 overflow-y-auto mb-10" style={{ maxHeight: "85%" }}>
                     {filteredChats.map((chat, key) => (
-                        <div className={`flex items-center gap-4 p-2 rounded-2xl ${activeChatId === chat.chat_id ? "bg-gray-100": ""}`} key={key} onClick={()=> {setActiveChatId(chat.chat_id)}}>
+                        <div className={`flex items-center gap-4 p-2 rounded-2xl ${activeChatId === chat.chat_id ? "bg-gray-100": ""}`} 
+                             key={key}
+                             onClick={()=> {handleChatClick(chat.chat_id)}}>
                             <span className="h-12 w-12 relative">
                                 <img 
-                                    src={chat.avatar} 
-                                    alt={chat.name} 
+                                    src={chat.user.avatar} 
+                                    alt={chat.user.name} 
                                     className="h-full w-full rounded-full object-cover" 
                                 />
-                                { chat.is_online &&
+                                { chat.user.is_online &&
                                     <div 
                                         className="h-3 w-3 absolute bottom-0 right-0 border-2
                                                 border-dirty-white bg-green-500 rounded-full">
@@ -148,19 +71,20 @@ const Chat = ({children}) => {
                             </span>
                             <div>
                                 <p className="text-lg font-semibold">
-                                    {chat.name}
+                                    {chat.user.name} 
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    {chat.latest_message}
+                                    {chat.latest_message.content}
                                 </p>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
+            {/* Chat View */}
             <div className="flex-2 p-3 bg-dirty-white shadow-sm rounded-md">
                 <div className="w-full h-full">
-                    {children}
+                    <Outlet/>
                 </div>
             </div>
         </div>
